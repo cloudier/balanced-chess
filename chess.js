@@ -232,7 +232,7 @@ function Board() {
 
     // Find what direction this move was in
     var diff = move.dst.sub(move.src);
-    var dir = diff.normalize();
+    var dir = diff.reduceCommon();
     var dirIndex = null;
     for (var i = 0; i < 8; i++) {
       if (dir.equals(DXY[DIRS[i]])) {
@@ -255,8 +255,8 @@ function Board() {
     // It's an annoying knight path
     var xMag = Math.abs(diff.x);
     var yMag = Math.abs(diff.y);
-    var xDir = new Pos(diff.x, 0).normalize();
-    var yDir = new Pos(0, diff.y).normalize();
+    var xDir = new Pos(diff.x, 0).reduceCommon();
+    var yDir = new Pos(0, diff.y).reduceCommon();
 
     var pos = move.src.clone();
     if (xMag > yMag) {
@@ -433,13 +433,17 @@ Pos.prototype.sub = function(pos) {
   if (pos === null) return this;
   return new Pos(this.x - pos.x, this.y - pos.y);
 };
-Pos.prototype.magnitude = function() {
-  return Math.sqrt(this.x*this.x + this.y*this.y);
-};
-Pos.prototype.normalize = function() {
-  var mag = this.magnitude();
-  return new Pos(this.x / mag, this.y / mag);
-};
+Pos.prototype.reduceCommon = function() {
+  var divisor = gcd(Math.abs(this.x), Math.abs(this.y));
+  return new Pos(this.x / divisor, this.y / divisor);
+}
+// Pos.prototype.magnitude = function() {
+//   return Math.sqrt(this.x*this.x + this.y*this.y);
+// };
+// Pos.prototype.normalize = function() {
+//   var mag = this.magnitude();
+//   return new Pos(this.x / mag, this.y / mag);
+// };
 Pos.prototype.withinBounds = function() {
   return this.x >= 0 && this.x < BOARD_SIZE &&
          this.y >= 0 && this.y < BOARD_SIZE;
@@ -462,6 +466,13 @@ function Piece(pieceType, player) {
 Piece.prototype.clone = function() {
   return new Piece(this.pieceType, this.player);
 };
+
+/*
+ * Utility / helper
+ */
+function gcd(a, b) {
+  return b ? gcd(b, a % b) : a;
+}
 
 /*
  * Expose these functions to outside code
