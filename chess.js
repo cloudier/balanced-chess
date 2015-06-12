@@ -351,14 +351,14 @@ function Board() {
     }
 
     // Move any pieces that can move
+    board[white.src.x][white.src.y] = null;
+    board[black.src.x][black.src.y] = null;
     if (whiteCanMove) {
       board[white.dst.x][white.dst.y] = whitePiece;
     }
     if (blackCanMove) {
       board[black.dst.x][black.dst.y] = blackPiece;
     }
-    board[white.src.x][white.src.y] = null;
-    board[black.src.x][black.src.y] = null;
 
     // Update numMoves and moves
     // TODO deepcopy?
