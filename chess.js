@@ -155,8 +155,13 @@ function Board() {
         break;
       case KNIGHT:
         // Knight can move along L-shaped directions
-        // Can move until it hits an obstacle
-        iterateMoves(positions, 8, 16);
+        // Can always move one unit unless out of bounds
+        for (var i = 8; i < 16; i++) {
+          var curPos = pos.add(DXY[DIRS[i]]);
+          if (curPos.withinBounds()) {
+            positions.push(curPos);
+          }
+        }
         break;
       case PAWN:
         var dir = DXY['S']; // Going south by default
