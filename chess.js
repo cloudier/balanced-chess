@@ -281,7 +281,7 @@ function Board() {
    */
   this.makeMove = function(white, black) {
     if (this.gameOver()) return false;
-    if (!this.isValidMove(white) || !this.isValidMove(black)) return false;
+    if (!this.isValidMove(WHITE, white) || !this.isValidMove(BLACK, black)) return false;
 
     var whitePath = this.getPath(white);
     var blackPath = this.getPath(black);
