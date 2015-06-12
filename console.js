@@ -47,8 +47,9 @@ function askWhite() {
       ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.WHITE, move_w)) {
       askWhite();
+    } else {
+    askBlack(move_w);      
     }
-    askBlack(move_w);
   });
 }
 
@@ -66,10 +67,10 @@ function askBlack(move_w) {
     var move_b = new chess.Move(src, dest);
     if (!board.isValidMove(chess.BLACK, move_b)) {
       askBlack(move_w);
+    } else {
+      board.makeMove(move_w, move_b);
+      printBoard(board.getBoard());
     }
-    // make move
-    board.makeMove(move_w, move_b);
-    printBoard(board.getBoard());
   });
 }
 
