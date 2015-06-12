@@ -1,4 +1,6 @@
-var BOARD_SIZE = 8;
+var exports = module.exports = {};
+
+global.BOARD_SIZE = 8; // maybe we should have a file for constants?
 
 // Players
 var WHITE = 0;
@@ -40,9 +42,9 @@ var DXY = {
   'K7': new Pos(-1, 2),
   'K8': new Pos(-2, 1),
 };
-var DIRS = {'N', 'E', 'S', 'W',
+var DIRS = ['N', 'E', 'S', 'W',
             'NE', 'SE', 'SW', 'NW',
-            'K1', 'K2', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8'};
+            'K1', 'K2', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8'];
 
 /*
  * Represents a chessboard and exposes functions
@@ -52,7 +54,7 @@ var DIRS = {'N', 'E', 'S', 'W',
  * forward and backwards through this history
  *
  */
-function Board() {
+exports.Board = function Board() {
   /* The actual board
    * White starts with pieces across [0][0]-[7][1]
    * Black starts with pieces across [0][6]-[7][7]
@@ -225,7 +227,7 @@ function Board() {
     for (var x = 0; x < BOARD_SIZE; x++) {
       boardCopy[x] = [];
       for (var y = 0; y < BOARD_SIZE; y++) {
-        boardCopy[x][y] = board[x][y].clone();
+        boardCopy[x][y] = board[x][y] === null ? null : board[x][y].clone();
       }
     }
     return boardCopy;
@@ -236,10 +238,10 @@ function Board() {
    *
    * The winner will be WHITE or BLACK or STALEMATE
    */
-  this.gameOver() {
+  this.gameOver = function () {
     return result !== null;
   }
-  this.winner() {
+  this.winner = function () {
     return result;
   }
 }

@@ -1,38 +1,49 @@
 var util = require('util');
 var chess = require('./chess');
 
-process.stdin.resume();
-process.stdin.setEncoding('utf8');
+
 var board = new chess.Board();
 
+// Prints out the given board state to stdout
 function printBoard(boardstate) {
   for (var x = 0; x < BOARD_SIZE; x++) {
     for (var y = 0; y < BOARD_SIZE; y++) {
-      console.log(boardstate[x][y].pieceType)
+      // Print a '.' if the piece is null, otherwise print the piece
+      var toPrint = boardstate[x][y] === null ?
+        '.' : boardstate[x][y].pieceType;
+      
+      // Print character without a newline
+      process.stdout.write(toPrint + ' ');
     }
+    // Print a new line
+    console.log();
+  }
+
+  if (!board.gameOver()) {
+    askWhite();
   }
 }
 
-function done() {
-  console.log('Quitting...');
-  process.exit();
+function askWhite() {
+  process.stdin.resume();
+  process.stdout.write("White's turn - enter input > ");
+  process.stdin.once('data', function(data) {
+    data = data.toString().trim();
+    // validate data
+    // check that move is valid
+    askBlack();
+  });
 }
 
-process.stdin.on('data', function(text) {
-  console.log('received data:', util.inspect(text));
-  if (text === 'quit\n') {
-    done();
-  }
-});
-
-
-do {
-  printBoard(board.getBoard());
-  // ask for white input
-  console.log("White's turn - enter input > ")
+function askBlack() {
+  process.stdin.resume();
+  process.stdout.write("Black's turn - enter input > ");
+  process.stdin.once('data', function(data) {
+    data = data.toString().trim();
+    // validate data
     // check that move is valid
-  // ask for black input
-  console.log("Black's turn - enter input > ")
-    // check that move is valid
-  // make move
-} while (True);
+    printBoard(board.getBoard());
+  });
+}
+
+printBoard(board.getBoard());
