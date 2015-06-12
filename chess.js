@@ -248,8 +248,7 @@ function Board() {
 /*
  * Represents a single move from one player
  */
-function Move(piece, src, dst) {
-  this.piece = piece;
+function Move(src, dst) {
   this.src = src;
   this.dst = dst;
 }
