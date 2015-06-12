@@ -100,8 +100,7 @@ function Board() {
       case null:
         break; // If piece doesn't exist, return an empty array.
       case KING:
-        // get adjacent positions that are empty
-        board
+        // get adjacent positions
         // castling?!
         break;
       case QUEEN:
@@ -109,10 +108,13 @@ function Board() {
         // diagonals
         break;
       case ROOK:
+        // forward/sideways
         break;
       case BISHOP:
+        // diagonals only
         break;
       case KNIGHT:
+        // l-shape
         break;
       case PAWN:
         // double square advance on first move
@@ -124,6 +126,10 @@ function Board() {
     return positions;
   }
   
+  this.isEmpty = function(pos) {
+    return pos === null;
+  }
+
   /*
    * Returns true if the move is valid and false otherwise
    */
@@ -190,6 +196,9 @@ Pos.prototype.equals = function(pos) {
 }
 Pos.prototype.clone = function() {
   return new Pos(this.x, this.y);
+}
+Pos.prototype.add = function(pos) {
+  return new Pos(this.x + pos.x, this.x + pos.y)
 }
 
 /*
