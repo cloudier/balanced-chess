@@ -1,6 +1,6 @@
 var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 
-global = {}
+global = {};
 
 // Players
 global.WHITE = 0;
@@ -282,7 +282,13 @@ function Board() {
    * cases false will be returned (true otherwise)
    */
   this.makeMove = function(white, black) {
-    
+    if (this.gameOver()) return false;
+    if (!isValidMove(white) || !isValidMove(black)) return false;
+
+    var whitePath = this.getPath(white);
+    var blackPath = this.getPath(black);
+
+    return true;
   };
   
   /*
