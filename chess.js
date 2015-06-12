@@ -201,7 +201,7 @@ exports.Board = function() {
   /*
    * Returns true if the move is valid and false otherwise
    */
-  this.isValid = function(player, move) {
+  this.isValidMove = function(player, move) {
     var positions = validMoves(player, move.src);
     for (var i = 0, len = positions.length; i < len; i++) {
       if (move.dst.equals(pos)) return true;
