@@ -4,7 +4,7 @@ var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 var WHITE = 0;
 var BLACK = 1;
 
-var STALEMATE = 2;
+var TIE = 2;
 
 // Types of pieces
 var KING   = 'K';
@@ -13,6 +13,16 @@ var ROOK   = 'R';
 var BISHOP = 'B';
 var KNIGHT = 'N';
 var PAWN   = 'P';
+
+// Piece strength
+var STRENGTH = {
+  'K': 0,
+  'P': 1,
+  'N': 2,
+  'B': 2,
+  'R': 3,
+  'Q': 4,
+}
 
 // Order of starting pieces
 // TODO notsure if necessary
@@ -96,9 +106,11 @@ function Board() {
   }
   reset(); // Call this in the constructor to set up the board appropriately
   
+  // Returns true if the square is empty, false otherwise
   function isEmpty(pos) {
     return board[pos.x][pos.y] === null;
   }
+
   /*
    * Returns array of valid positions, given a particular position
    * and the player that is attempting to make the move
@@ -202,6 +214,17 @@ function Board() {
   };
 
   /*
+   * Returns true if the move is valid and false otherwise
+   */
+  this.isValidMove = function(player, move) {
+    var positions = this.validMoves(player, move.src);
+    for (var i = 0, len = positions.length; i < len; i++) {
+      if (move.dst.equals(positions[i])) return true;
+    }
+    return false;
+  };
+
+  /*
    * Return the path a piece took, given a Move
    */
   this.getPath = function(move) {
@@ -255,17 +278,6 @@ function Board() {
     }
     return path;
   };
-
-  /*
-   * Returns true if the move is valid and false otherwise
-   */
-  this.isValidMove = function(player, move) {
-    var positions = this.validMoves(player, move.src);
-    for (var i = 0, len = positions.length; i < len; i++) {
-      if (move.dst.equals(positions[i])) return true;
-    }
-    return false;
-  };
   
   /*
    * Make a pair of moves and update the board state to
@@ -279,12 +291,89 @@ function Board() {
    * either of the moves supplied were invalid. In these
    * cases false will be returned (true otherwise)
    */
+  function inPath(pos, path) {
+    for (var i = 0, len = path.length; i < len; i++) {
+      if (pos.equals(path[i])) return true;
+    }
+    return false;
+  }
   this.makeMove = function(white, black) {
     if (this.gameOver()) return false;
     if (!this.isValidMove(WHITE, white) || !this.isValidMove(BLACK, black)) return false;
 
+    // Calculate paths of the moves
     var whitePath = this.getPath(white);
     var blackPath = this.getPath(black);
+
+    // Calculate whether they intercept or not
+    var whiteInBlack = inPath(white.dst, blackPath);
+    var blackInWhite = inPath(black.dst, whitePath);
+
+    var whiteCanMove = true; // White move successful
+    var blackCanMove = true; // Black move successful
+    var fight = false;       // A fight occurs - resolution on piece value
+
+    if (whiteInBlack && blackInWhite) {
+      // They both intercept each other - fight!
+      fight = true;
+    } else if (whiteInBlack) {
+      // White intercepts black
+      blackCanMove = false;
+    } else if (blackInWhite) {
+      // Black intercepts white
+      whiteCanMove = false;
+    } else {
+      // No intercepts, check for 'dodges'
+      // A dodge is when one piece moves away from a move which would've taken it
+      var whiteDodged = black.dst.equals(white.src);
+      var blackDodged = white.dst.equals(black.src);
+      if (whiteDodged && blackDodged) {
+        // Both dodges, ie they both tried to take each other - fight!
+        fight = true;
+      } else if (whiteDodged) {
+        // White dodged
+      } else if (blackDodged) {
+        // Black dodged
+      }
+    }
+
+    var whitePiece = board[white.src.x][white.src.y];
+    var blackPiece = board[black.src.x][black.src.y];
+
+    // Resolve fighting powers
+    if (fight) {
+      if (STRENGTH[whitePiece] >= STRENGTH[blackPiece]) {
+        blackCanMove = false;
+      }
+      if (STRENGTH[blackPiece] >= STRENGTH[whitePiece]) {
+        whiteCanMove = false;
+      }
+    }
+
+    // Move any pieces that can move
+    if (whiteCanMove) {
+      board[white.dst.x][white.dst.y] = whitePiece;
+    }
+    if (blackCanMove) {
+      board[black.dst.x][black.dst.y] = blackPiece;
+    }
+    board[white.src.x][white.src.y] = null;
+    board[black.src.x][black.src.y] = null;
+
+    // Update numMoves and moves
+    // TODO deepcopy?
+    moves[numMoves++] = {white: white, black: black};
+
+    // Check if someone won
+    var whiteLost = (whitePiece === KING && !whiteCanMove);
+    var blackLost = (blackPiece === KING && !blackCanMove);
+    if (whiteLost && blackLost) {
+      result = TIE;
+    } else if (whiteLost) {
+      result = BLACK;
+    } else if (blackLost) {
+      result = WHITE;
+    }
 
     return true;
   };
@@ -386,5 +475,5 @@ module.exports = {
 global = {
   'WHITE': WHITE,
   'BLACK': BLACK,
-  'STALEMATE': STALEMATE,
+  'TIE': TIE,
 };
