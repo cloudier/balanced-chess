@@ -17,6 +17,28 @@ var PAWN   = 'P';
 // TODO this doesn't use the constants which is bad...
 var START_POSITION = 'RNBKQBNR';
 
+// Directions
+var DIRS = {
+  'N': new Pos(0, -1),
+  'E': new Pos(1, 0),
+  'S': new Pos(0, 1),
+  'W': new Pos(-1, 0),
+
+  'NE': new Pos(1, -1),
+  'SE': new Pos(1, 1),
+  'SW': new Pos(-1, 1),
+  'NW': new Pos(-1, -1),
+
+  'K1': new Pos(-2, -1),
+  'K2': new Pos(-1, -2),
+  'K3': new Pos(1, -2),
+  'K4': new Pos(2, -1),
+  'K5': new Pos(2, 1),
+  'K6': new Pos(1, 2),
+  'K7': new Pos(-1, 2),
+  'K8': new Pos(-2, 1),
+};
+
 /*
  * Represents a chessboard and exposes functions
  * that can make moves on the board and change the state
@@ -49,8 +71,9 @@ function Board() {
     }
   }
   
-  // The number of moves that have been made and list of past moves
+  // The number of moves that have been made
   var numMoves = 0;
+  // A list of past moves: {'white': Move(), 'black': Move()}
   var moves = [];
   
   // Resets the board to the initial state
@@ -138,6 +161,9 @@ function Board() {
 }
 
 // TODO do we care about type checking and ensuring that arguments were passed
+/*
+ * Represents a single move from one player
+ */
 function Move(piece, src, dst) {
   this.piece = piece;
   this.src = src;
@@ -145,9 +171,17 @@ function Move(piece, src, dst) {
 }
 
 // TODO do we care about type checking
+/*
+ * A cartesian coordinate.
+ */
 function Pos(x, y) {
   this.x = x || 0;
   this.y = y || 0;
+}
+Pos.prototype.add = function(pos) {
+  if (pos === null) return this;
+  if (typeof pos != 'Pos') return this;
+  return new Pos(this.x + pos.x, this.y + pos.y);
 }
 Pos.prototype.equals = function(pos) {
   if (pos === null) return false;
@@ -158,6 +192,9 @@ Pos.prototype.clone = function() {
   return new Pos(this.x, this.y);
 }
 
+/*
+ * Represents a piece on the board
+ */
 function Piece(pieceType, player) {
   this.pieceType = pieceType;
   this.player = player;
