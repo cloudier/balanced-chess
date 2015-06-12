@@ -1,12 +1,12 @@
 var exports = module.exports = {};
 
-global.BOARD_SIZE = 8; // maybe we should have a file for constants?
+var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 
 // Players
-var WHITE = 0;
-var BLACK = 1;
+global.WHITE = 0;
+global.BLACK = 1;
 
-var STALEMATE = 2;
+global.STALEMATE = 2;
 
 // Types of pieces
 var KING   = 'K';
@@ -54,7 +54,7 @@ var DIRS = ['N', 'E', 'S', 'W',
  * forward and backwards through this history
  *
  */
-exports.Board = function Board() {
+exports.Board = function() {
   /* The actual board
    * White starts with pieces across [0][0]-[7][1]
    * Black starts with pieces across [0][6]-[7][7]
