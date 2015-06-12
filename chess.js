@@ -4,6 +4,8 @@ var BOARD_SIZE = 8;
 var WHITE = 0;
 var BLACK = 1;
 
+var STALEMATE = 2;
+
 // Types of pieces
 var KING   = 'K';
 var QUEEN  = 'Q';
@@ -78,6 +80,9 @@ function Board() {
   var numMoves = 0;
   // A list of past moves: {'white': Move(), 'black': Move()}
   var moves = [];
+
+  // Result will be WHITE or BLACK or STALEMATE or null if not finished
+  var result = null;
   
   // Resets the board to the initial state
   function reset() {
@@ -225,6 +230,18 @@ function Board() {
       }
     }
     return boardCopy;
+  }
+
+  /*
+   * If the game is finished or not
+   *
+   * The winner will be WHITE or BLACK or STALEMATE
+   */
+  this.gameOver() {
+    return result !== null;
+  }
+  this.winner() {
+    return result;
   }
 }
 
