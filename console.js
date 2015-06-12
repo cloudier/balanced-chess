@@ -56,9 +56,9 @@ function askWhite() {
     console.log('src ' + src_x + ',' + src_y +
       ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.WHITE, move_w)) {
-      askWhite();
+      askWhite(); // If move is invalid, query user again
     } else {
-      askBlack(move_w);      
+      askBlack(move_w); // Otherwise, ask for second player's move
     }
   });
 }
@@ -76,11 +76,13 @@ function askBlack(move_w) {
     var dest = new chess.Pos(+dest_x, +dest_y);
     var move_b = new chess.Move(src, dest);
 
+    console.log('src ' + src_x + ',' + src_y +
+      ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.BLACK, move_b)) {
       askBlack(move_w);
     } else {
-      board.makeMove(move_w, move_b);
-      printBoard(board.getBoard());
+      board.makeMove(move_w, move_b); // Update board state
+      printBoard(board.getBoard()); // Print the new board
     }
   });
 }
