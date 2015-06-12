@@ -1,5 +1,3 @@
-var exports = module.exports = {};
-
 var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 
 // Players
@@ -54,7 +52,7 @@ var DIRS = ['N', 'E', 'S', 'W',
  * forward and backwards through this history
  *
  */
-exports.Board = function() {
+function Board() {
   /* The actual board
    * White starts with pieces across [0][0]-[7][1]
    * Black starts with pieces across [0][6]-[7][7]
@@ -291,4 +289,12 @@ function Piece(pieceType, player) {
 }
 Piece.prototype.clone = function() {
   return new Piece(this.pieceType, this.player);
+}
+
+/*
+ * Expose these functions to outside code
+ */
+module.exports = {
+  'Board': Board,
+  'Move': Move,
 }
