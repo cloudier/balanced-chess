@@ -216,14 +216,37 @@ function Board() {
       var pos = move.src.add(dir);
       while (!pos.equals(move.dst)) {
         path.push(pos);
-        pos = move.src.add(dir);
+        pos = pos.add(dir);
       }
       path.push(pos);
       return path;
     }
 
     // It's an annoying knight path
-    // TODO
+    var xMag = Math.abs(diff.x);
+    var yMag = Math.abs(diff.y);
+    var xDir = new Pos(diff.x, 0).normalize();
+    var yDir = new Pos(0, diff.y).normalize();
+
+    var pos = move.src.clone();
+    if (xMag > yMag) {
+      // x first
+      for (var i = 0; i < 2; i++) {
+        pos = pos.add(xDir);
+        path.push(pos);
+      }
+      pos = pos.add(yDir);
+      path.push(pos);
+    } else {
+      // x first
+      for (var i = 0; i < 2; i++) {
+        pos = pos.add(yDir);
+        path.push(pos);
+      }
+      pos = pos.add(xDir);
+      path.push(pos);
+    }
+    return path;
   }
 
   /*
