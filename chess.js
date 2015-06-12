@@ -96,6 +96,9 @@ function Board() {
   }
   reset(); // Call this in the constructor to set up the board appropriately
   
+  function isEmpty(pos) {
+    return board[pos.x][pos.y] === null;
+  }
   /*
    * Returns array of valid positions, given a particular position
    * and the player that is attempting to make the move
@@ -111,7 +114,7 @@ function Board() {
       var curPos = pos.add(DXY[DIRS[i]]);
       while (curPos.withinBounds()) {
         arr.push(curPos);
-        if (board[curPos.x][curPos.y] !== null) {
+        if (!isEmpty(curPos)) {
           break;
         }
         curPos = curPos.add(DXY[DIRS[i]]);
@@ -177,11 +180,11 @@ function Board() {
         }
 
         // Can only advance forward if not blocked
-        if (curPos.withinBounds() && board[curPos.x][curPos.y] === null) {
+        if (curPos.withinBounds() && isEmpty(curPos)) {
           positions.push(curPos);
           if (homeRow) {
             curPos = curPos.add(dir);
-            if (curPos.withinBounds() && board[curPos.x][curPos.y] === null) {
+            if (curPos.withinBounds() && isEmpty(curPos)) {
               positions.push(curPos);
             }
           }
@@ -191,10 +194,6 @@ function Board() {
     }
     
     return positions;
-  }
-  
-  this.isEmpty = function(pos) {
-    return pos === null;
   }
 
   /*
