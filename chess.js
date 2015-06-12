@@ -447,7 +447,7 @@ Pos.prototype.sub = function(pos) {
 Pos.prototype.reduceCommon = function() {
   var divisor = gcd(Math.abs(this.x), Math.abs(this.y));
   return new Pos(this.x / divisor, this.y / divisor);
-}
+};
 // Pos.prototype.magnitude = function() {
 //   return Math.sqrt(this.x*this.x + this.y*this.y);
 // };
