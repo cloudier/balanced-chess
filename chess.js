@@ -22,7 +22,7 @@ var STRENGTH = {
   'B': 2,
   'R': 3,
   'Q': 4,
-}
+};
 
 // Order of starting pieces
 // TODO notsure if necessary
@@ -176,9 +176,9 @@ function Board() {
         }
         break;
       case PAWN:
-        var dir = DXY['S']; // Going south by default
+        var dir = DXY.S; // Going south by default
         if (player === BLACK) {
-          dir = DXY['N'];
+          dir = DXY.N;
         }
 
         // If on starting row we can advance two squares
@@ -187,8 +187,8 @@ function Board() {
 
         // Can always take a diagonal if within bounds
         var curPos = pos.add(dir);
-        var diag1 = curPos.add(DXY['W']);
-        var diag2 = curPos.add(DXY['E']);
+        var diag1 = curPos.add(DXY.W);
+        var diag2 = curPos.add(DXY.E);
         if (diag1.withinBounds()) {
           positions.push(diag1);
         }
