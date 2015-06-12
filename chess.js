@@ -1,12 +1,10 @@
 var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 
-global = {};
-
 // Players
-global.WHITE = 0;
-global.BLACK = 1;
+var WHITE = 0;
+var BLACK = 1;
 
-global.STALEMATE = 2;
+var STALEMATE = 2;
 
 // Types of pieces
 var KING   = 'K';
@@ -89,11 +87,11 @@ function Board() {
   // Resets the board to the initial state
   function reset() {
     for (var x = 0; x < BOARD_SIZE; x++) {
-      board[x][0] = new Piece(START_POSITION.charAt(x), global.WHITE);
-      board[x][1] = new Piece(PAWN, global.WHITE);
+      board[x][0] = new Piece(START_POSITION.charAt(x), WHITE);
+      board[x][1] = new Piece(PAWN, WHITE);
       
-      board[x][6] = new Piece(PAWN, global.BLACK);
-      board[x][7] = new Piece(START_POSITION.charAt(x), global.BLACK);
+      board[x][6] = new Piece(PAWN, BLACK);
+      board[x][7] = new Piece(START_POSITION.charAt(x), BLACK);
     }
   }
   reset(); // Call this in the constructor to set up the board appropriately
@@ -167,13 +165,13 @@ function Board() {
         break;
       case PAWN:
         var dir = DXY['S']; // Going south by default
-        if (player === global.BLACK) {
+        if (player === BLACK) {
           dir = DXY['N'];
         }
 
         // If on starting row we can advance two squares
-        var homeRow = (player === global.WHITE && pos.y === 1) ||
-                      (player === global.BLACK && pos.y === 6);
+        var homeRow = (player === WHITE && pos.y === 1) ||
+                      (player === BLACK && pos.y === 6);
 
         // Can always take a diagonal if within bounds
         var curPos = pos.add(dir);
@@ -383,4 +381,10 @@ module.exports = {
   'Board': Board,
   'Move': Move,
   'Pos': Pos,
+};
+
+global = {
+  'WHITE': WHITE,
+  'BLACK': BLACK,
+  'STALEMATE': STALEMATE,
 };
