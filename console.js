@@ -37,10 +37,10 @@ function askWhite() {
     data = data.toString().trim();
     var src_x = data[0];
     var src_y = data[2];
-    var src = new chess.Pos(src_x, src_y);
+    var src = new chess.Pos(+src_x, +src_y);
     var dest_x = data[4];
     var dest_y = data[6];
-    var dest = new chess.Pos(dest_x, dest_y);
+    var dest = new chess.Pos(+dest_x, +dest_y);
     var move_w = new chess.Move(src, dest);
 
     console.log('src ' + src_x + ',' + src_y +
@@ -59,10 +59,10 @@ function askBlack(move_w) {
     data = data.toString().trim();
     var src_x = data[0];
     var src_y = data[2];
-    var src = new chess.Pos(src_x, src_y);
+    var src = new chess.Pos(+src_x, +src_y);
     var dest_x = data[4];
     var dest_y = data[6];
-    var dest = new chess.Pos(dest_x, dest_y);
+    var dest = new chess.Pos(+dest_x, +dest_y);
     var move_b = new chess.Move(src, dest);
     if (!board.isValidMove(chess.BLACK, move_b)) {
       askBlack(move_w);
