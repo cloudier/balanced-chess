@@ -18,7 +18,7 @@ var PAWN   = 'P';
 var START_POSITION = 'RNBKQBNR';
 
 // Directions
-var DIRS = {
+var DXY = {
   'N': new Pos(0, -1),
   'E': new Pos(1, 0),
   'S': new Pos(0, 1),
@@ -38,6 +38,9 @@ var DIRS = {
   'K7': new Pos(-1, 2),
   'K8': new Pos(-2, 1),
 };
+var DIRS = {'N', 'E', 'S', 'W',
+            'NE', 'SE', 'SW', 'NW',
+            'K1', 'K2', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8'};
 
 /*
  * Represents a chessboard and exposes functions
@@ -93,33 +96,92 @@ function Board() {
    * and the player that is attempting to make the move
    *
    * Naturally takes into account the piece at that position
+   *
+   * iterateMoves is a helper function that walks along directions
+   * and pushes on moves as long as they are valid. [start, end) are
+   * the indices of the DIRS array to use
    */
+  function iterateMoves(arr, start, end) {
+    for (var i = start; i < end; i++) {
+      var curPos = pos.add(DXY[DIRS[i]]);
+      while (curPos.withinBounds()) {
+        arr.push(curPos);
+        if (board[curPos.x][curPos.y] !== null) {
+          break;
+        }
+        curPos = curPos.add(DXY[DIRS[i]]);
+      }
+    }
+  }
   this.validMoves = function(player, pos) {
     var positions = [];
-    switch(board[pos.x][pos.y]) {
-      case null:
-        break; // If piece doesn't exist, return an empty array.
+    if (board[pos.x][pos.y] === null) return positions;
+    if (board[pos.x][pos.y].player !== player) return positions;
+    
+    switch(board[pos.x][pos.y].pieceType) {
       case KING:
-        // get adjacent positions
-        // castling?!
+        // King can move along all directions
+        // Can always move one unit unless out of bounds
+        for (var i = 0; i < 8; i++) {
+          var curPos = pos.add(DXY[DIRS[i]]);
+          if (curPos.withinBounds()) {
+            positions.push(curPos);
+          }
+        }
+        // TODO castling?!
         break;
       case QUEEN:
-        // forward/sidewas
-        // diagonals
+        // Queen can move along all directions
+        // Can move until it hits an obstacle
+        iterateMoves(positions, 0, 8);
         break;
       case ROOK:
-        // forward/sideways
+        // Rook can move along cardinal directions
+        // Can move until it hits an obstacle
+        iterateMoves(positions, 0, 4);
         break;
       case BISHOP:
-        // diagonals only
+        // Bishop can move along diagonal directions
+        // Can move until it hits an obstacle
+        iterateMoves(positions, 4, 8);
         break;
       case KNIGHT:
-        // l-shape
+        // Knight can move along L-shaped directions
+        // Can move until it hits an obstacle
+        iterateMoves(positions, 8, 16);
         break;
       case PAWN:
-        // double square advance on first move
-        // enpassant
-        // move forward 1 square if not blocked
+        var dir = DXY['S']; // Going south by default
+        if (player === black) {
+          dir = DXY['N'];
+        }
+
+        // If on starting row we can advance two squares
+        var homeRow = (player === white && pos.y === 1) ||
+                      (player === black && pos.y === 6);
+
+        // Can always take a diagonal if within bounds
+        var curPos = pos.add(dir);
+        var diag1 = curPos.add(DXY['W']);
+        var diag2 = curPos.add(DXY['E']);
+        if (diag1.withinBounds()) {
+          positions.push(diag1);
+        }
+        if (diag2.withinBounds()) {
+          positions.push(diag2);
+        }
+
+        // Can only advance forward if not blocked
+        if (curPos.withinBounds() && board[curPos.x][curPos.y] === null) {
+          positions.push(curPos);
+          if (homeRow) {
+            curPos = curPos.add(dir);
+            if (curPos.withinBounds() && board[curPos.x][curPos.y] === null) {
+              positions.push(curPos);
+            }
+          }
+        }
+        // TODO enpassant
         break;
     }
     
@@ -189,6 +251,10 @@ Pos.prototype.add = function(pos) {
   if (typeof pos != 'Pos') return this;
   return new Pos(this.x + pos.x, this.y + pos.y);
 }
+Pos.withinBounds = function() {
+  return this.x >= 0 && this.x < BOARD_SIZE &&
+         this.y >= 0 && this.y < BOARD_SIZE;
+}
 Pos.prototype.equals = function(pos) {
   if (pos === null) return false;
   if (typeof pos != 'Pos') return false;
@@ -196,9 +262,6 @@ Pos.prototype.equals = function(pos) {
 }
 Pos.prototype.clone = function() {
   return new Pos(this.x, this.y);
-}
-Pos.prototype.add = function(pos) {
-  return new Pos(this.x + pos.x, this.x + pos.y)
 }
 
 /*
