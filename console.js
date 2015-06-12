@@ -1,6 +1,7 @@
-var util = require('util');
-var chess = require('./chess');
+/*jslint node: true*/
+'use strict';
 
+var chess = require('./chess');
 
 var board = new chess.Board();
 
@@ -29,9 +30,9 @@ function printBoard(boardstate) {
 
 function askWhite() {
   process.stdin.resume();
-  process.stdout.write("White's turn - enter input. For example:\n");
-  process.stdout.write("'1,4 2,4' - Only the position of the digits matter.\n")
-  process.stdout.write("> ")
+  process.stdout.write('White\'s turn - enter input. For example:\n');
+  process.stdout.write('\'1,4 2,4\' - Only the position of the digits matter.\n');
+  process.stdout.write('> ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
     var src_x = data[0];
@@ -43,7 +44,7 @@ function askWhite() {
     var move_w = new chess.Move(src, dest);
 
     console.log('src ' + src_x + ',' + src_y +
-      ' dest ' + dest_x + ',' + dest_y)
+      ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.WHITE, move_w)) {
       askWhite();
     }
@@ -53,7 +54,7 @@ function askWhite() {
 
 function askBlack(move_w) {
   process.stdin.resume();
-  process.stdout.write("Black's turn - enter input > ");
+  process.stdout.write('Black\'s turn - enter input > ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
     var src_x = data[0];
