@@ -470,9 +470,7 @@ module.exports = {
   'Board': Board,
   'Move': Move,
   'Pos': Pos,
-};
 
-global = {
   'WHITE': WHITE,
   'BLACK': BLACK,
   'TIE': TIE,
