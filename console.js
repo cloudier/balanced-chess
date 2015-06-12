@@ -28,8 +28,8 @@ function printBoard(boardstate) {
       console.log('White wins!');
     } else if (board.winner() == chess.BLACK) {
       console.log('Black wins!');
-    } else if (board.winner() == chess.STALEMATE) {
-      console.log('Stalemate!');
+    } else if (board.winner() == chess.TIE) {
+      console.log('Tie!');
     }
   }
 }
