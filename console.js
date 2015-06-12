@@ -47,7 +47,7 @@ function askWhite() {
     if (!board.isValidMove(chess.WHITE, move_w)) {
       askWhite();
     }
-    askBlack(move);
+    askBlack(move_w);
   });
 }
 
@@ -63,7 +63,7 @@ function askBlack(move_w) {
     var dest_y = data[6];
     var dest = new chess.Pos(dest_x, dest_y);
     var move_b = new chess.Move(src, dest);
-    if (!board.isValidMove(chess.BLACK, move)) {
+    if (!board.isValidMove(chess.BLACK, move_b)) {
       askBlack(move_w);
     }
     // make move
