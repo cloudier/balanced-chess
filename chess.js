@@ -1,5 +1,7 @@
 var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
 
+global = {}
+
 // Players
 global.WHITE = 0;
 global.BLACK = 1;
@@ -87,11 +89,11 @@ function Board() {
   // Resets the board to the initial state
   function reset() {
     for (var x = 0; x < BOARD_SIZE; x++) {
-      board[x][0] = new Piece(START_POSITION.charAt(x), WHITE);
-      board[x][1] = new Piece(PAWN, WHITE);
+      board[x][0] = new Piece(START_POSITION.charAt(x), global.WHITE);
+      board[x][1] = new Piece(PAWN, global.WHITE);
       
-      board[x][6] = new Piece(PAWN, BLACK);
-      board[x][7] = new Piece(START_POSITION.charAt(x), BLACK);
+      board[x][6] = new Piece(PAWN, global.BLACK);
+      board[x][7] = new Piece(START_POSITION.charAt(x), global.BLACK);
     }
   }
   reset(); // Call this in the constructor to set up the board appropriately
@@ -111,7 +113,7 @@ function Board() {
    */
   function iterateMoves(arr, start, end) {
     for (var i = start; i < end; i++) {
-      var curPos = pos.add(DXY[DIRS[i]]);
+      var curPos = start.add(DXY[DIRS[i]]);
       while (curPos.withinBounds()) {
         arr.push(curPos);
         if (!isEmpty(curPos)) {
@@ -165,13 +167,13 @@ function Board() {
         break;
       case PAWN:
         var dir = DXY['S']; // Going south by default
-        if (player === black) {
+        if (player === global.BLACK) {
           dir = DXY['N'];
         }
 
         // If on starting row we can advance two squares
-        var homeRow = (player === white && pos.y === 1) ||
-                      (player === black && pos.y === 6);
+        var homeRow = (player === global.WHITE && pos.y === 1) ||
+                      (player === global.BLACK && pos.y === 6);
 
         // Can always take a diagonal if within bounds
         var curPos = pos.add(dir);
@@ -199,7 +201,7 @@ function Board() {
     }
     
     return positions;
-  }
+  };
 
   /*
    * Return the path a piece took, given a Move
@@ -210,6 +212,13 @@ function Board() {
     // Find what direction this move was in
     var diff = move.dst.sub(move.src);
     var dir = diff.normalize();
+    var dirIndex = null;
+    for (var i = 0; i < 8; i++) {
+      if (dir.equals(DXY[DIRS[i]])) {
+        dirIndex = i;
+        break;
+      }
+    }
 
     // It's a simple straight line, path is (src,dst]
     if (dirIndex !== null) {
@@ -247,7 +256,7 @@ function Board() {
       path.push(pos);
     }
     return path;
-  }
+  };
 
   /*
    * Returns true if the move is valid and false otherwise
@@ -255,26 +264,33 @@ function Board() {
   this.isValidMove = function(player, move) {
     var positions = this.validMoves(player, move.src);
     for (var i = 0, len = positions.length; i < len; i++) {
-      if (move.dst.equals(pos)) return true;
+      if (move.dst.equals(positions[i])) return true;
     }
     return false;
-  }
+  };
   
   /*
-   * Make a pair of moves and return the result
+   * Make a pair of moves and update the board state to
+   * reflect that. The following are updated:
+   *  - numMoves is incremented
+   *  - moves is appended with this move
+   *  - board is updated appropriately
+   *  - result may be updated if someone wins
    *
-   * TODO how to return result? what's in it?
+   * This function will fail if the game is over or if
+   * either of the moves supplied were invalid. In these
+   * cases false will be returned (true otherwise)
    */
   this.makeMove = function(white, black) {
-    //
-  }
+    
+  };
   
   /*
    * Returns a 2d array of Piece objects which represents
    * the board. Note that this is a deep copy of our existing board
    */
   this.getBoard = function() {
-    var boardCopy = []
+    var boardCopy = [];
     for (var x = 0; x < BOARD_SIZE; x++) {
       boardCopy[x] = [];
       for (var y = 0; y < BOARD_SIZE; y++) {
@@ -282,7 +298,7 @@ function Board() {
       }
     }
     return boardCopy;
-  }
+  };
 
   /*
    * If the game is finished or not
@@ -291,10 +307,10 @@ function Board() {
    */
   this.gameOver = function () {
     return result !== null;
-  }
+  };
   this.winner = function () {
     return result;
-  }
+  };
 }
 
 // TODO do we care about type checking and ensuring that arguments were passed
@@ -318,33 +334,30 @@ function Pos(x, y) {
 }
 Pos.prototype.add = function(pos) {
   if (pos === null) return this;
-  if (typeof pos != 'Pos') return this;
   return new Pos(this.x + pos.x, this.y + pos.y);
-}
+};
 Pos.prototype.sub = function(pos) {
   if (pos === null) return this;
-  if (typeof pos != 'Pos') return this;
   return new Pos(this.x - pos.x, this.y - pos.y);
-}
+};
 Pos.prototype.magnitude = function() {
   return Math.sqrt(this.x*this.x + this.y*this.y);
-}
+};
 Pos.prototype.normalize = function() {
   var mag = this.magnitude();
   return new Pos(this.x / mag, this.y / mag);
-}
+};
 Pos.prototype.withinBounds = function() {
   return this.x >= 0 && this.x < BOARD_SIZE &&
          this.y >= 0 && this.y < BOARD_SIZE;
-}
+};
 Pos.prototype.equals = function(pos) {
   if (pos === null) return false;
-  if (typeof pos != 'Pos') return false;
   return this.x === pos.x && this.y === pos.y;
-}
+};
 Pos.prototype.clone = function() {
   return new Pos(this.x, this.y);
-}
+};
 
 /*
  * Represents a piece on the board
@@ -355,7 +368,7 @@ function Piece(pieceType, player) {
 }
 Piece.prototype.clone = function() {
   return new Piece(this.pieceType, this.player);
-}
+};
 
 /*
  * Expose these functions to outside code
@@ -364,4 +377,4 @@ module.exports = {
   'Board': Board,
   'Move': Move,
   'Pos': Pos,
-}
+};
