@@ -296,4 +296,5 @@ Piece.prototype.clone = function() {
 module.exports = {
   'Board': Board,
   'Move': Move,
+  'Pos': Pos,
 }
