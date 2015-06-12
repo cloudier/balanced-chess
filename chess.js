@@ -121,9 +121,9 @@ function Board() {
    * and pushes on moves as long as they are valid. [start, end) are
    * the indices of the DIRS array to use
    */
-  function iterateMoves(arr, start, end) {
+  function iterateMoves(arr, pos, start, end) {
     for (var i = start; i < end; i++) {
-      var curPos = start.add(DXY[DIRS[i]]);
+      var curPos = pos.add(DXY[DIRS[i]]);
       while (curPos.withinBounds()) {
         arr.push(curPos);
         if (!isEmpty(curPos)) {
@@ -153,17 +153,17 @@ function Board() {
       case QUEEN:
         // Queen can move along all directions
         // Can move until it hits an obstacle
-        iterateMoves(positions, 0, 8);
+        iterateMoves(positions, pos, 0, 8);
         break;
       case ROOK:
         // Rook can move along cardinal directions
         // Can move until it hits an obstacle
-        iterateMoves(positions, 0, 4);
+        iterateMoves(positions, pos, 0, 4);
         break;
       case BISHOP:
         // Bishop can move along diagonal directions
         // Can move until it hits an obstacle
-        iterateMoves(positions, 4, 8);
+        iterateMoves(positions, pos, 4, 8);
         break;
       case KNIGHT:
         // Knight can move along L-shaped directions
