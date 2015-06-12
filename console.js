@@ -19,8 +19,11 @@ function printBoard(boardstate) {
     console.log();
   }
 
+  // If the game isn't over, ask for first player's input
   if (!board.gameOver()) {
     askWhite();
+  } else {
+    console.log(board.winner());
   }
 }
 
@@ -37,18 +40,18 @@ function askWhite() {
     var dest_x = data[4];
     var dest_y = data[6];
     var dest = new chess.Pos(dest_x, dest_y);
-    var move = new chess.Move(src, dest);
+    var move_w = new chess.Move(src, dest);
 
     console.log('src ' + src_x + ',' + src_y +
       ' dest ' + dest_x + ',' + dest_y)
-    if (board.isValidMove(chess.WHITE, move)) {
+    if (!board.isValidMove(chess.WHITE, move_w)) {
       askWhite();
     }
     askBlack(move);
   });
 }
 
-function askBlack(move) {
+function askBlack(move_w) {
   process.stdin.resume();
   process.stdout.write("Black's turn - enter input > ");
   process.stdin.once('data', function(data) {
@@ -59,12 +62,12 @@ function askBlack(move) {
     var dest_x = data[4];
     var dest_y = data[6];
     var dest = new chess.Pos(dest_x, dest_y);
-    var move = new chess.Move(src, dest);
-    if (board.isValidMove(chess.BLACK, move)) {
-      askBlack();
+    var move_b = new chess.Move(src, dest);
+    if (!board.isValidMove(chess.BLACK, move)) {
+      askBlack(move_w);
     }
     // make move
-    board.makeMove();
+    board.makeMove(move_w, move_b);
     printBoard(board.getBoard());
   });
 }
