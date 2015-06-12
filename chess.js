@@ -365,8 +365,19 @@ function Board() {
     moves[numMoves++] = {white: white, black: black};
 
     // Check if someone won
-    var whiteLost = (whitePiece.pieceType === KING && !whiteCanMove);
-    var blackLost = (blackPiece.pieceType === KING && !blackCanMove);
+    var whiteLost = true;
+    var blackLost = true;
+    for (var x = 0; x < BOARD_SIZE; x++) {
+      for (var y = 0; y < BOARD_SIZE; y++) {
+        if (board[x][y].pieceType === KING) {
+          if (board[x][y].player === WHITE) {
+            whiteLost = false;
+          } else {
+            blackLost = false;
+          }
+        }
+      }
+    }
     if (whiteLost && blackLost) {
       result = TIE;
     } else if (whiteLost) {
