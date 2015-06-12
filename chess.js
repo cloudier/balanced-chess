@@ -202,6 +202,31 @@ function Board() {
   }
 
   /*
+   * Return the path a piece took, given a Move
+   */
+  this.getPath = function(move) {
+    var path = [];
+
+    // Find what direction this move was in
+    var diff = move.dst.sub(move.src);
+    var dir = diff.normalize();
+
+    // It's a simple straight line, path is (src,dst]
+    if (dirIndex !== null) {
+      var pos = move.src.add(dir);
+      while (!pos.equals(move.dst)) {
+        path.push(pos);
+        pos = move.src.add(dir);
+      }
+      path.push(pos);
+      return path;
+    }
+
+    // It's an annoying knight path
+    // TODO
+  }
+
+  /*
    * Returns true if the move is valid and false otherwise
    */
   this.isValidMove = function(player, move) {
@@ -261,6 +286,8 @@ function Move(src, dst) {
 // TODO do we care about type checking
 /*
  * A cartesian coordinate.
+ *
+ * Actually doubles as a vector, in a sense
  */
 function Pos(x, y) {
   this.x = x || 0;
@@ -271,7 +298,19 @@ Pos.prototype.add = function(pos) {
   if (typeof pos != 'Pos') return this;
   return new Pos(this.x + pos.x, this.y + pos.y);
 }
-Pos.withinBounds = function() {
+Pos.prototype.sub = function(pos) {
+  if (pos === null) return this;
+  if (typeof pos != 'Pos') return this;
+  return new Pos(this.x - pos.x, this.y - pos.y);
+}
+Pos.prototype.magnitude = function() {
+  return Math.sqrt(this.x*this.x + this.y*this.y);
+}
+Pos.prototype.normalize = function() {
+  var mag = this.magnitude();
+  return new Pos(this.x / mag, this.y / mag);
+}
+Pos.prototype.withinBounds = function() {
   return this.x >= 0 && this.x < BOARD_SIZE &&
          this.y >= 0 && this.y < BOARD_SIZE;
 }
