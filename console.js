@@ -1,7 +1,7 @@
 /*jslint node: true*/
 'use strict';
 
-var chess = require('./chess');
+var chess = require('./public/js/chess');
 
 var board = new chess.Board();
 

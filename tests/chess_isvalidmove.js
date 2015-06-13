@@ -70,9 +70,9 @@ describe('chess', function() {
         // mockery.registerAllowable('async');                    // Allow some modules to be loaded normally
         // mockery.registerMock('../lib/donut', stubbedDonut);    // Register others to be replaced with our stub
         // mockery.registerAllowable('../lib/donut-queue', true); // Allow our module under test to be loaded normally as well
-        mockery.registerAllowable('../chess', true);
+        mockery.registerAllowable('../public/js/chess', true);
         // Chess = require('../lib/donut-queue');                 // Load your module under test
-        chess = require('../chess');
+        chess = require('../public/js/chess');
         board = new chess.Board(); 
     });
 
