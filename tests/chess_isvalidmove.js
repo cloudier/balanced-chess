@@ -1,4 +1,4 @@
-/*jslint node: true*/
+/*jslint node: true, mocha: true*/
 'use strict';
 
 var assert = require('assert'),
@@ -11,6 +11,44 @@ var sandbox = sinon.sandbox.create(),
     // },
     chess,
     board;
+
+/*
+ * expected is an array of strings where each
+ * string represents a row. A single period
+ * represents an empty square. Lowercase letters
+ * represent white pieces and uppercase are black
+ * pieces. The pieces are RNBKQBNR in that order
+ *
+ * Returns true if the boards match and false otherwise
+ */
+function checkBoard(actual, expected) {
+    for (var y = 0; y < expected.length; y++) {
+        for (var x = 0; x < expected[y].length; x++) {
+            // If either of them is empty
+            var actualEmpty = (actual[x][y] === null);
+            var expectedEmpty = (expected[y][x] === '.');
+            if (actualEmpty && expectedEmpty) {
+                continue;
+            } else if (actualEmpty && !expectedEmpty) {
+                return false;
+            } else if (!actualEmpty && expectedEmpty) {
+                return false;
+            }
+
+            // Both have a piece, see if the pieces match
+            var expectedPiece = expected[y][x].toUpperCase();
+            var expectedPlayer = (expected[y][x] === expectedPiece ?
+                                  chess.BLACK : chess.WHITE);
+            if (actual[x][y].pieceType !== expectedPiece) {
+                return false;
+            }
+            if (actual[x][y].player !== expectedPlayer) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 describe('chess', function() {
     
@@ -35,6 +73,21 @@ describe('chess', function() {
 
     after(function() {
         mockery.disable(); // Disable Mockery after tests are completed
+    });
+
+    describe('init', function() {
+        it('should have the correct starting configuration', function() {
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pppppppp',
+                '........',
+                '........',
+                '........',
+                '........',
+                'PPPPPPPP',
+                'RNBKQBNR',
+            ]));
+        });
     });
 
     describe('isValidMove', function() {
