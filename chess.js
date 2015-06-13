@@ -1,6 +1,19 @@
 /*jslint node: true*/
 'use strict';
 
+/*
+ * Expose these functions to outside code
+ */
+module.exports = {
+  'Board': Board,
+  'Move': Move,
+  'Pos': Pos,
+
+  'WHITE': WHITE,
+  'BLACK': BLACK,
+  'TIE': TIE,
+};
+
 var BOARD_SIZE = 8;
 
 // Players
@@ -490,16 +503,3 @@ Piece.prototype.clone = function() {
 function gcd(a, b) {
   return b ? gcd(b, a % b) : a;
 }
-
-/*
- * Expose these functions to outside code
- */
-module.exports = {
-  'Board': Board,
-  'Move': Move,
-  'Pos': Pos,
-
-  'WHITE': WHITE,
-  'BLACK': BLACK,
-  'TIE': TIE,
-};
