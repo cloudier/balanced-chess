@@ -1,0 +1,1 @@
+var chess = require('../common/chess');
