@@ -50,6 +50,16 @@ function checkBoard(actual, expected) {
     return true;
 }
 
+/*
+ * Convenience wrapper for chess.Move which allows
+ * easier initialization
+ */
+function Move(srcx, srcy, dstx, dsty) {
+    var src = new chess.Pos(srcx, srcy);
+    var dst = new chess.Pos(dstx, dsty);
+    return new chess.Move(src, dst);
+}
+
 describe('chess', function() {
     
     before(function() {
@@ -92,11 +102,12 @@ describe('chess', function() {
 
     describe('isValidMove', function() {
         it('should allow pawns to move 2 squares on their first move', function() {
-            var src = new chess.Pos(0, 1);
-            var dst = new chess.Pos(0, 3);
-            var move_w = new chess.Move(src, dst);
-            assert(board.isValidMove(chess.WHITE, move_w));
+            assert(board.isValidMove(chess.WHITE, Move(0, 1, 0, 3)));
         });
+
+        it('should not allow players to control the opponents pieces', function() {
+            assert(!board.isValidMove(chess.BLACK, Move(0, 1, 0, 3)));
+        })
 
         // it('should throw an error when called with a non-object', function() {
         //     var badDonut = -1253434;
