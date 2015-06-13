@@ -7,7 +7,9 @@ var board = new chess.Board();
 
 // Prints out the given board state to stdout
 function printBoard(boardstate) {
+  console.log('  0 1 2 3 4 5 6 7');
   for (var y = 0; y < boardstate.length; y++) {
+    process.stdout.write(y.toString() + ' ');
     for (var x = 0; x < boardstate.length; x++) {
       // Print a '.' if the piece is null, otherwise print the piece
       var toPrint = boardstate[x][y] === null ?
@@ -53,8 +55,6 @@ function askWhite() {
     var dest = new chess.Pos(+dest_x, +dest_y);
     var move_w = new chess.Move(src, dest);
 
-    console.log('src ' + src_x + ',' + src_y +
-      ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.WHITE, move_w)) {
       askWhite(); // If move is invalid, query user again
     } else {
@@ -65,7 +65,8 @@ function askWhite() {
 
 function askBlack(move_w) {
   process.stdin.resume();
-  process.stdout.write('Black\'s turn - enter input > ');
+  process.stdout.write('Black\'s turn - enter input.');
+  process.stdout.write('> ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
     var src_x = data[0];
@@ -76,8 +77,6 @@ function askBlack(move_w) {
     var dest = new chess.Pos(+dest_x, +dest_y);
     var move_b = new chess.Move(src, dest);
 
-    console.log('src ' + src_x + ',' + src_y +
-      ' dest ' + dest_x + ',' + dest_y);
     if (!board.isValidMove(chess.BLACK, move_b)) {
       askBlack(move_w);
     } else {
