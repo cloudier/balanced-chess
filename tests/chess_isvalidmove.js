@@ -105,6 +105,22 @@ describe('chess', function() {
             assert(board.isValidMove(chess.WHITE, cMove(0, 1, 0, 3)));
         });
 
+        it('should not allow pawns to move 2 squares after it has already moved', function() {
+            board.makeMove(cMove(0, 1, 0, 2), cMove(0, 6, 0, 5));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                '.ppppppp',
+                'p.......',
+                '........',
+                '........',
+                'P.......',
+                '.PPPPPPP',
+                'RNBKQBNR',
+            ]));
+            assert(board.isValidMove(chess.WHITE, cMove(0, 2, 0, 3)));
+            assert(!board.isValidMove(chess.WHITE, cMove(0, 2, 0, 4)));
+        });
+
         it('should not allow players to control the opponents pieces', function() {
             assert(!board.isValidMove(chess.BLACK, cMove(0, 1, 0, 3)));
         });
