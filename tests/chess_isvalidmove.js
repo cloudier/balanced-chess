@@ -106,7 +106,7 @@ describe('chess', function() {
         });
 
         it('should not allow pawns to move 2 squares after it has already moved', function() {
-            board.makeMove(cMove(0, 1, 0, 2), cMove(0, 6, 0, 5));
+            assert(board.makeMove(cMove(0, 1, 0, 2), cMove(0, 6, 0, 5)));
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
                 '.ppppppp',
@@ -151,6 +151,70 @@ describe('chess', function() {
         //     stubbedDonut.thatAPIMethod.yields();
         //     assert(stubbedDonut.thatAPIMethod.calledOnce()).to.be.true();
         // });
+    });
+
+    describe('makeMove', function() {
+        it('should correctly move non-interacting pieces', function() {
+            assert(board.makeMove(cMove(3, 1, 3, 3), cMove(3, 6, 3, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'ppp.pppp',
+                '........',
+                '...p....',
+                '...P....',
+                '........',
+                'PPP.PPPP',
+                'RNBKQBNR',
+            ]));
+
+            assert(board.makeMove(cMove(4, 0, 0, 4), cMove(2, 7, 5, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbk.bnr',
+                'ppp.pppp',
+                '........',
+                '...p....',
+                'q..P.B..',
+                '........',
+                'PPP.PPPP',
+                'RN.KQBNR',
+            ]));
+
+            assert(board.makeMove(cMove(1, 0, 2, 2), cMove(1, 7, 2, 5)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bk.bnr',
+                'ppp.pppp',
+                '..n.....',
+                '...p....',
+                'q..P.B..',
+                '..N.....',
+                'PPP.PPPP',
+                'R..KQBNR',
+            ]));
+
+            assert(board.makeMove(cMove(7, 0, 7, 1), cMove(3, 7, 3, 6)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bk.bn.',
+                'ppp.pppr',
+                '..n.....',
+                '...p....',
+                'q..P.B..',
+                '..N.....',
+                'PPPKPPPP',
+                'R...QBNR',
+            ]));
+
+            assert(board.makeMove(cMove(7, 1, 7, 5), cMove(3, 6, 4, 5)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bk.bn.',
+                'ppp.ppp.',
+                '..n.....',
+                '...p....',
+                'q..P.B..',
+                '..N.K..r',
+                'PPP.PPPP',
+                'R...QBNR',
+            ]));
+        });
     });
     
 });
