@@ -1,4 +1,7 @@
-var BOARD_SIZE = 8; // TODO maybe we should have a file for constants?
+/*jslint node: true*/
+'use strict';
+
+var BOARD_SIZE = 8;
 
 // Players
 var WHITE = 0;
@@ -268,7 +271,7 @@ function Board() {
       pos = pos.add(yDir);
       path.push(pos);
     } else {
-      // x first
+      // y first
       for (var i = 0; i < 2; i++) {
         pos = pos.add(yDir);
         path.push(pos);
@@ -349,6 +352,8 @@ function Board() {
         whiteCanMove = false;
       }
     }
+
+    // Check for pawn promotion?
 
     // Move any pieces that can move
     board[white.src.x][white.src.y] = null;
