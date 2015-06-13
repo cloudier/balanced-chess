@@ -53,15 +53,19 @@ function askWhite() {
   process.stdin.once('data', function(data) {
     // Convert data into a move
     data = data.toString().trim();
-    var src_x = data[0];
-    var src_y = data[2];
+    var re = /\d+/g;
+    var groups = data.match(re);
+
+    var src_x = groups[0];
+    var src_y = groups[1];
     var src = new chess.Pos(+src_x, +src_y);
-    var dest_x = data[4];
-    var dest_y = data[6];
+    var dest_x = groups[2];
+    var dest_y = groups[3];
     var dest = new chess.Pos(+dest_x, +dest_y);
     var move_w = new chess.Move(src, dest);
 
     if (!board.isValidMove(chess.WHITE, move_w)) {
+      console.log('Invalid move:', move_w);
       askWhite(); // If move is invalid, query user again
     } else {
       askBlack(move_w); // Otherwise, ask for second player's move
@@ -75,15 +79,19 @@ function askBlack(move_w) {
   process.stdout.write('> ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
-    var src_x = data[0];
-    var src_y = data[2];
+    var re = /\d+/g;
+    var groups = data.match(re);
+
+    var src_x = groups[0];
+    var src_y = groups[1];
     var src = new chess.Pos(+src_x, +src_y);
-    var dest_x = data[4];
-    var dest_y = data[6];
+    var dest_x = groups[2];
+    var dest_y = groups[3];
     var dest = new chess.Pos(+dest_x, +dest_y);
     var move_b = new chess.Move(src, dest);
 
     if (!board.isValidMove(chess.BLACK, move_b)) {
+      console.log('Invalid move:', move_w);
       askBlack(move_w);
     } else {
       board.makeMove(move_w, move_b); // Update board state
