@@ -54,7 +54,7 @@ function checkBoard(actual, expected) {
  * Convenience wrapper for chess.Move which allows
  * easier initialization
  */
-function Move(srcx, srcy, dstx, dsty) {
+function cMove(srcx, srcy, dstx, dsty) {
     var src = new chess.Pos(srcx, srcy);
     var dst = new chess.Pos(dstx, dsty);
     return new chess.Move(src, dst);
@@ -102,12 +102,28 @@ describe('chess', function() {
 
     describe('isValidMove', function() {
         it('should allow pawns to move 2 squares on their first move', function() {
-            assert(board.isValidMove(chess.WHITE, Move(0, 1, 0, 3)));
+            assert(board.isValidMove(chess.WHITE, cMove(0, 1, 0, 3)));
         });
 
         it('should not allow players to control the opponents pieces', function() {
-            assert(!board.isValidMove(chess.BLACK, Move(0, 1, 0, 3)));
-        })
+            assert(!board.isValidMove(chess.BLACK, cMove(0, 1, 0, 3)));
+        });
+
+        it('should allow knights to jump over pieces', function() {
+            assert(board.isValidMove(chess.BLACK, cMove(1, 7, 2, 5)));
+        });
+
+        it('should allow players to take their own pieces', function() {
+            assert(board.isValidMove(chess.BLACK, cMove(1, 7, 3, 6)));
+        });
+
+        it('should not allow players to move empty squares', function() {
+            assert(!board.isValidMove(chess.WHITE, cMove(5, 5, 4, 4)));
+        });
+
+        it('should not allow rooks to move through pieces', function() {
+            assert(!board.isValidMove(chess.WHITE, cMove(0, 0, 0, 2)));
+        });
 
         // it('should throw an error when called with a non-object', function() {
         //     var badDonut = -1253434;
