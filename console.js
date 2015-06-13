@@ -12,8 +12,14 @@ function printBoard(boardstate) {
     process.stdout.write(y.toString() + ' ');
     for (var x = 0; x < boardstate.length; x++) {
       // Print a '.' if the piece is null, otherwise print the piece
-      var toPrint = boardstate[x][y] === null ?
-        '.' : boardstate[x][y].pieceType;
+      // Lowercase for WHITE and uppercase for BLACK
+      var toPrint = '.';
+      if (boardstate[x][y] !== null) {
+        toPrint = boardstate[x][y].pieceType;
+        if (boardstate[x][y].player === chess.WHITE) {
+          toPrint = toPrint.toLowerCase();
+        }
+      }
       
       // Print character without a newline
       process.stdout.write(toPrint + ' ');
