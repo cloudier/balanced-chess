@@ -74,7 +74,7 @@ function askWhite() {
 
 function askBlack(move_w) {
   process.stdin.resume();
-  process.stdout.write('Black\'s turn.');
+  process.stdout.write('Black\'s turn.\n');
   process.stdout.write('> ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
@@ -90,7 +90,7 @@ function askBlack(move_w) {
     var move_b = new chess.Move(src, dest);
 
     if (!board.isValidMove(chess.BLACK, move_b)) {
-      console.log('Invalid move:', move_w);
+      console.log('Invalid move:', move_b);
       askBlack(move_w);
     } else {
       board.makeMove(move_w, move_b); // Update board state
