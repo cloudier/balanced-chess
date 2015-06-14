@@ -367,7 +367,7 @@ function Board() {
 
     // Update numMoves and moves
     // TODO deepcopy?
-    moves[numMoves++] = {white: white, black: black};
+    moves[numMoves++] = {white: white.clone(), black: black.clone()};
 
     // Check if someone won
     var whiteLost = true;
@@ -430,6 +430,9 @@ function Board() {
 function Move(src, dst) {
   this.src = src;
   this.dst = dst;
+}
+Move.prototype.clone = function() {
+  return new Move(this.src.clone(), this.dst.clone());
 }
 
 // TODO do we care about type checking
