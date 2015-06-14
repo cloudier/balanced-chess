@@ -131,6 +131,11 @@ describe('chess', function() {
             assert(!board.isValidMove(chess.WHITE, new chess.Move(0, 0, 0, 2)));
         });
 
+        it('should not allow pawns to take diagonally unless there is a piece there', function() {
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(0, 1, 1, 2)));
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(0, 6, 1, 5)));
+        });
+
         // it('should throw an error when called with a non-object', function() {
         //     var badDonut = -1253434;
         //     assert().to.throw();

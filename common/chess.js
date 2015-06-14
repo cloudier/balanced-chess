@@ -189,13 +189,14 @@ function Board() {
                       (player === BLACK && pos.y === 6);
 
         // Can always take a diagonal if within bounds
+        // and if there is actually a piece there
         var curPos = pos.add(dir);
         var diag1 = curPos.add(DXY.W);
         var diag2 = curPos.add(DXY.E);
-        if (diag1.withinBounds()) {
+        if (diag1.withinBounds() && !isEmpty(diag1)) {
           positions.push(diag1);
         }
-        if (diag2.withinBounds()) {
+        if (diag2.withinBounds() && !isEmpty(diag2)) {
           positions.push(diag2);
         }
 
