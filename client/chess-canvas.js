@@ -1,5 +1,23 @@
 var chess = require('../common/chess');
 
+var WHITE_ICONS = {
+	'K': String.fromCharCode(0x2654),
+	'Q': String.fromCharCode(0x2655),
+	'R': String.fromCharCode(0x2656),
+	'B': String.fromCharCode(0x2657),
+	'N': String.fromCharCode(0x2658),
+	'P': String.fromCharCode(0x2659),
+}
+
+var BLACK_ICONS = {
+	'K': String.fromCharCode(0x265A),
+	'Q': String.fromCharCode(0x265B),
+	'R': String.fromCharCode(0x265C),
+	'B': String.fromCharCode(0x265D),
+	'N': String.fromCharCode(0x265E),
+	'P': String.fromCharCode(0x265F),
+}
+
 /*
  * Extends chess.Board() and adds methods for drawing the board
  * to an html canvas object as well as methods to interact with
@@ -28,10 +46,12 @@ function DrawableBoard(id) {
 
 				if (board[x][y] === null) continue;
 
-				var text = board[x][y].pieceType;
+				var piece = board[x][y].pieceType;
 				if (board[x][y].player === chess.WHITE) {
-					ctx.strokeText(text, x * cellSize + offset, (y+1) * cellSize - offset, cellSize);
+					var text = WHITE_ICONS[piece];
+					ctx.fillText(text, x * cellSize + offset, (y+1) * cellSize - offset, cellSize);
 				} else {
+					var text = BLACK_ICONS[piece];
 					ctx.fillText(text, x * cellSize + offset, (y+1) * cellSize - offset, cellSize);
 				}
 			}
