@@ -46,8 +46,7 @@ function askWhite() {
   // Start standard input stream
   process.stdin.resume();
   // Write out instructions to console
-  process.stdout.write('White\'s turn - enter input. For example:\n');
-  process.stdout.write('\'1,4 2,4\' - Only the position of the digits matter.\n');
+  process.stdout.write('White\'s turn.\n');
   process.stdout.write('> ');
   // Get data from stdin once asynchronously
   process.stdin.once('data', function(data) {
@@ -75,7 +74,7 @@ function askWhite() {
 
 function askBlack(move_w) {
   process.stdin.resume();
-  process.stdout.write('Black\'s turn - enter input.');
+  process.stdout.write('Black\'s turn.\n');
   process.stdout.write('> ');
   process.stdin.once('data', function(data) {
     data = data.toString().trim();
@@ -91,7 +90,7 @@ function askBlack(move_w) {
     var move_b = new chess.Move(src, dest);
 
     if (!board.isValidMove(chess.BLACK, move_b)) {
-      console.log('Invalid move:', move_w);
+      console.log('Invalid move:', move_b);
       askBlack(move_w);
     } else {
       board.makeMove(move_w, move_b); // Update board state
@@ -100,4 +99,7 @@ function askBlack(move_w) {
   });
 }
 
+console.log('Balanced Chess');
+console.log('White is represented by lowercase letters.');
+console.log('Enter your move in the format x1,y1 x2,y2.');
 printBoard(board.getBoard());
