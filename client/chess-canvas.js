@@ -191,7 +191,7 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
           $scope.message = '';
         } else {
           $scope.message = 'Invalid destination cell: ' + pos;
-          $scope.message += '\nWhite moving from ' + moveSrc;
+          $scope.step = 0;
         }
         break;
       case 2:
@@ -211,7 +211,7 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
           $scope.message = '';
         } else {
           $scope.message = 'Invalid destination cell: ' + pos;
-          $scope.message += '\nBlack moving from ' + moveSrc;
+          $scope.step = 2;
         }
         board.draw();
         break;
