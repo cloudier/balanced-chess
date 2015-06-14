@@ -47,7 +47,7 @@ function DrawableBoard(id) {
 		var cellPos = new chess.Pos(Math.floor(clickPos.x / cellSize),
 									Math.floor(clickPos.y / cellSize));
 
-		console.log(cellPos);
+		return cellPos.x + ', ' + cellPos.y;
 	};
 }
 DrawableBoard.prototype = Object.create(chess.Board.prototype);
@@ -83,3 +83,9 @@ HTMLCanvasElement.prototype.relMouseCoords = function (event) {
  */
 var board = new DrawableBoard('chessboard');
 board.draw();
+
+var app = angular.module('app', []);
+app.controller('ChessCtrl', ['$scope', function($scope) {
+  $scope.message = 'Nothing clicked yet';
+  $scope.board = board;
+}]);
