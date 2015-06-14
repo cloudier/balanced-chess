@@ -38,8 +38,12 @@ function DrawableBoard(id) {
    * Draw the current board state to the canvas
    */
   this.draw = function() {
+    // Clear for redrawing
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     var board = this.getBoard();
 
+    // Set font sizes and center them in each cell
     var fontSize = Math.floor(cellSize * 0.7);
     ctx.font = fontSize + 'px serif';
     var offset = cellSize * 0.15;
@@ -65,6 +69,8 @@ function DrawableBoard(id) {
 
   /*
    * Handles a click event that occured on the canvas
+   *
+   * Returns the Pos that describes the cell that was clicked
    */
   this.click = function(event) {
     var clickPos = canvas.relMouseCoords(event);
@@ -72,7 +78,7 @@ function DrawableBoard(id) {
     var cellPos = new chess.Pos(Math.floor(clickPos.x / cellSize),
                   Math.floor(clickPos.y / cellSize));
 
-    return cellPos.x + ', ' + cellPos.y;
+    return cellPos;
   };
 
   /*
@@ -145,6 +151,73 @@ board.draw();
 
 var app = angular.module('app', []);
 app.controller('ChessCtrl', ['$scope', function($scope) {
-  $scope.message = 'Nothing clicked yet';
+  /*
+   * Step controls what should happen next
+   *  - 0 White src
+   *  - 1 White dst
+   *  - 2 Black src
+   *  - 3 Black dst
+   */
+  $scope.step = 0;
+  $scope.instructions = [
+    'White select source',
+    'White select destination',
+    'Black select source',
+    'Black select destination',
+  ];
+
+  var moveSrc = null;
+  var moveDst = null;
+
+  $scope.message = '';
   $scope.board = board;
+  $scope.click = function(event) {
+    var pos = board.click(event);
+    var result = false;
+    switch($scope.step) {
+      case 0:
+        moveSrc = pos;
+        result = pos.withinBounds();
+        if (result) {
+          $scope.message = 'White moving from ' + moveSrc;
+        } else {
+          $scope.message = 'Invalid source cell: ' + pos;
+        }
+        break;
+      case 1:
+        moveDst = pos;
+        result = board.submitMove(chess.WHITE, new chess.Move(moveSrc, moveDst));
+        if (result) {
+          $scope.message = '';
+        } else {
+          $scope.message = 'Invalid destination cell: ' + pos;
+          $scope.message += '\nWhite moving from ' + moveSrc;
+        }
+        break;
+      case 2:
+        moveSrc = pos;
+        result = pos.withinBounds();
+        if (result) {
+          $scope.message = 'Black moving from ' + moveSrc;
+        } else {
+          $scope.message = 'Invalid source cell';
+        }
+        break;
+      case 3:
+        moveDst = pos;
+        result = board.submitMove(chess.BLACK, new chess.Move(moveSrc, moveDst));
+        result = result && board.advanceGame();
+        if (result) {
+          $scope.message = '';
+        } else {
+          $scope.message = 'Invalid destination cell: ' + pos;
+          $scope.message += '\nBlack moving from ' + moveSrc;
+        }
+        board.draw();
+        break;
+    }
+    if (result) {
+      $scope.step = ($scope.step + 1) % 4;
+    }
+  }
 }]);

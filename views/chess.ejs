@@ -9,9 +9,10 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <div id="chessgame" ng-controller="ChessCtrl">
-      <p><b>Clicked position:</b> {{ message }}</p>
+      <p><b>Instruction:</b> {{ instructions[step] }}</p>
+      <p><b>Message:</b> {{ message }}</p>
 
-      <canvas id="chessboard" ng-click="message = board.click($event)" width="600" height="600" style="border: 1px solid blue;"></canvas>
+      <canvas id="chessboard" ng-click="click($event)" width="600" height="600" style="border: 1px solid blue;"></canvas>
     </div>
     <script src="/js/chess-canvas.js"></script>
   </body>
