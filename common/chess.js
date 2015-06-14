@@ -498,7 +498,8 @@ module.exports = {
   'Board': Board,
   'Move': Move,
   'Pos': Pos,
-
+  
+  'BOARD_SIZE': BOARD_SIZE,
   'WHITE': WHITE,
   'BLACK': BLACK,
   'TIE': TIE,
