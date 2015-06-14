@@ -50,16 +50,6 @@ function checkBoard(actual, expected) {
     return true;
 }
 
-/*
- * Convenience wrapper for chess.Move which allows
- * easier initialization
- */
-function cMove(srcx, srcy, dstx, dsty) {
-    var src = new chess.Pos(srcx, srcy);
-    var dst = new chess.Pos(dstx, dsty);
-    return new chess.Move(src, dst);
-}
-
 describe('chess', function() {
     
     before(function() {
@@ -102,11 +92,11 @@ describe('chess', function() {
 
     describe('isValidMove', function() {
         it('should allow pawns to move 2 squares on their first move', function() {
-            assert(board.isValidMove(chess.WHITE, cMove(0, 1, 0, 3)));
+            assert(board.isValidMove(chess.WHITE, new chess.Move(0, 1, 0, 3)));
         });
 
         it('should not allow pawns to move 2 squares after it has already moved', function() {
-            assert(board.makeMove(cMove(0, 1, 0, 2), cMove(0, 6, 0, 5)));
+            assert(board.makeMove(new chess.Move(0, 1, 0, 2), new chess.Move(0, 6, 0, 5)));
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
                 '.ppppppp',
@@ -117,28 +107,28 @@ describe('chess', function() {
                 '.PPPPPPP',
                 'RNBKQBNR',
             ]));
-            assert(board.isValidMove(chess.WHITE, cMove(0, 2, 0, 3)));
-            assert(!board.isValidMove(chess.WHITE, cMove(0, 2, 0, 4)));
+            assert(board.isValidMove(chess.WHITE, new chess.Move(0, 2, 0, 3)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(0, 2, 0, 4)));
         });
 
         it('should not allow players to control the opponents pieces', function() {
-            assert(!board.isValidMove(chess.BLACK, cMove(0, 1, 0, 3)));
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(0, 1, 0, 3)));
         });
 
         it('should allow knights to jump over pieces', function() {
-            assert(board.isValidMove(chess.BLACK, cMove(1, 7, 2, 5)));
+            assert(board.isValidMove(chess.BLACK, new chess.Move(1, 7, 2, 5)));
         });
 
         it('should allow players to take their own pieces', function() {
-            assert(board.isValidMove(chess.BLACK, cMove(1, 7, 3, 6)));
+            assert(board.isValidMove(chess.BLACK, new chess.Move(1, 7, 3, 6)));
         });
 
         it('should not allow players to move empty squares', function() {
-            assert(!board.isValidMove(chess.WHITE, cMove(5, 5, 4, 4)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(5, 5, 4, 4)));
         });
 
         it('should not allow rooks to move through pieces', function() {
-            assert(!board.isValidMove(chess.WHITE, cMove(0, 0, 0, 2)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(0, 0, 0, 2)));
         });
 
         // it('should throw an error when called with a non-object', function() {
@@ -155,7 +145,7 @@ describe('chess', function() {
 
     describe('makeMove', function() {
         it('should correctly move non-interacting pieces', function() {
-            assert(board.makeMove(cMove(3, 1, 3, 3), cMove(3, 6, 3, 4)));
+            assert(board.makeMove(new chess.Move(3, 1, 3, 3), new chess.Move(3, 6, 3, 4)));
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
                 'ppp.pppp',
@@ -167,7 +157,7 @@ describe('chess', function() {
                 'RNBKQBNR',
             ]));
 
-            assert(board.makeMove(cMove(4, 0, 0, 4), cMove(2, 7, 5, 4)));
+            assert(board.makeMove(new chess.Move(4, 0, 0, 4), new chess.Move(2, 7, 5, 4)));
             assert(checkBoard(board.getBoard(), [
                 'rnbk.bnr',
                 'ppp.pppp',
@@ -179,7 +169,7 @@ describe('chess', function() {
                 'RN.KQBNR',
             ]));
 
-            assert(board.makeMove(cMove(1, 0, 2, 2), cMove(1, 7, 2, 5)));
+            assert(board.makeMove(new chess.Move(1, 0, 2, 2), new chess.Move(1, 7, 2, 5)));
             assert(checkBoard(board.getBoard(), [
                 'r.bk.bnr',
                 'ppp.pppp',
@@ -191,7 +181,7 @@ describe('chess', function() {
                 'R..KQBNR',
             ]));
 
-            assert(board.makeMove(cMove(7, 0, 7, 1), cMove(3, 7, 3, 6)));
+            assert(board.makeMove(new chess.Move(7, 0, 7, 1), new chess.Move(3, 7, 3, 6)));
             assert(checkBoard(board.getBoard(), [
                 'r.bk.bn.',
                 'ppp.pppr',
@@ -203,7 +193,7 @@ describe('chess', function() {
                 'R...QBNR',
             ]));
 
-            assert(board.makeMove(cMove(7, 1, 7, 5), cMove(3, 6, 4, 5)));
+            assert(board.makeMove(new chess.Move(7, 1, 7, 5), new chess.Move(3, 6, 4, 5)));
             assert(checkBoard(board.getBoard(), [
                 'r.bk.bn.',
                 'ppp.ppp.',

@@ -423,17 +423,25 @@ function Board() {
   };
 }
 
-// TODO do we care about type checking and ensuring that arguments were passed
 /*
  * Represents a single move from one player
+ *
+ * Can take either:
+ *  - Pos src, Pos dst
+ *  - int srcx, int srcy, int dstx, int dsty
  */
-function Move(src, dst) {
-  this.src = src;
-  this.dst = dst;
+function Move() {
+  if (arguments.length === 2) {
+    this.src = arguments[0].clone();
+    this.dst = arguments[1].clone();
+  } else if (arguments.length === 4) {
+    this.src = new Pos(arguments[0], arguments[1]);
+    this.dst = new Pos(arguments[2], arguments[3]);
+  }
 }
 Move.prototype.clone = function() {
   return new Move(this.src.clone(), this.dst.clone());
-}
+};
 
 // TODO do we care about type checking
 /*
