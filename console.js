@@ -2,6 +2,25 @@
 'use strict';
 
 var chess = require('./common/chess');
+var colour = require('colour');
+
+var WHITE_ICONS = {
+  'K': String.fromCharCode(0x2654),
+  'Q': String.fromCharCode(0x2655),
+  'R': String.fromCharCode(0x2656),
+  'B': String.fromCharCode(0x2657),
+  'N': String.fromCharCode(0x2658),
+  'P': String.fromCharCode(0x2659),
+}
+
+var BLACK_ICONS = {
+  'K': String.fromCharCode(0x265A),
+  'Q': String.fromCharCode(0x265B),
+  'R': String.fromCharCode(0x265C),
+  'B': String.fromCharCode(0x265D),
+  'N': String.fromCharCode(0x265E),
+  'P': String.fromCharCode(0x265F),
+}
 
 var board = new chess.Board();
 
@@ -13,16 +32,19 @@ function printBoard(boardstate) {
     for (var x = 0; x < boardstate.length; x++) {
       // Print a '.' if the piece is null, otherwise print the piece
       // Lowercase for WHITE and uppercase for BLACK
-      var toPrint = '.';
+      var toPrint = '. ';
       if (boardstate[x][y] !== null) {
-        toPrint = boardstate[x][y].pieceType;
+        var piece = boardstate[x][y].pieceType;
         if (boardstate[x][y].player === chess.WHITE) {
-          toPrint = toPrint.toLowerCase();
+          toPrint = WHITE_ICONS[piece] + ' ';
+        } else {
+          toPrint = BLACK_ICONS[piece] + ' ';
+          toPrint = toPrint.inverse;
         }
       }
       
       // Print character without a newline
-      process.stdout.write(toPrint + ' ');
+      process.stdout.write(toPrint);
     }
     // Print a new line
     console.log();
