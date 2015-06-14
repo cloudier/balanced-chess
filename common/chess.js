@@ -483,6 +483,9 @@ Pos.prototype.equals = function(pos) {
 Pos.prototype.clone = function() {
   return new Pos(this.x, this.y);
 };
+Pos.prototype.toString = function() {
+  return '(' + this.x + ', ' + this.y + ')';
+}
 
 /*
  * Represents a piece on the board
