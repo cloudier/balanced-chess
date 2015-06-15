@@ -356,11 +356,11 @@ function Board() {
     var blackPiece = board[black.src.x][black.src.y];
 
     // Resolve fighting powers
-    if (result.fight) {
-      if (STRENGTH[whitePiece] >= STRENGTH[blackPiece]) {
+    if (result.fight === true) {
+      if (STRENGTH[whitePiece.pieceType] >= STRENGTH[blackPiece.pieceType]) {
         result.black.moves = false;
       }
-      if (STRENGTH[blackPiece] >= STRENGTH[whitePiece]) {
+      if (STRENGTH[blackPiece.pieceType] >= STRENGTH[whitePiece.pieceType]) {
         result.white.moves = false;
       }
     }

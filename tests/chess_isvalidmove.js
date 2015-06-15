@@ -50,6 +50,23 @@ function checkBoard(actual, expected) {
     return true;
 }
 
+/*
+ * Given the result object from chess.makeMove, res, compare
+ * it against the provided booleans. Return false if any of
+ * them do not match and true otherwise.
+ */
+function checkResult(res, wDodge, wInt, wMove, bDodge, bInt, bMove, fight) {
+    if (res === false) return false;
+    if (res.white.dodge !== wDodge) return false;
+    if (res.white.intercept !== wInt) return false;
+    if (res.white.moves !== wMove) return false;
+    if (res.black.dodge !== bDodge) return false;
+    if (res.black.intercept !== bInt) return false;
+    if (res.black.moves !== bMove) return false;
+    if (res.fight !== fight) return false;
+    return true;
+}
+
 describe('chess', function() {
     
     before(function() {
@@ -208,6 +225,22 @@ describe('chess', function() {
                 '..N.K..r',
                 'PPP.PPPP',
                 'R...QBNR',
+            ]));
+        });
+        
+        it('should correctly resolve fights', function() {
+            assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(3, 6, 3, 4)));
+            var res = board.makeMove(new chess.Move(2, 3, 3, 4), new chess.Move(3, 4, 2, 3));
+            assert(checkResult(res, true, false, false, true, false, false, true));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pp.ppppp',
+                '........',
+                '........',
+                '........',
+                '........',
+                'PPP.PPPP',
+                'RNBKQBNR',
             ]));
         });
     });
