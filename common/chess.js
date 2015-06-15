@@ -152,6 +152,20 @@ function Board() {
           }
         }
         // TODO castling?!
+		// new global vars for kings and rooks - hasmoved
+		// if (king and left rook haven't moved) {
+		//     if (path is clear (1 left, 2 left, 3 left)) {
+		//          positions.push(0, -2)
+		//			setflag - left rook to (0, -1)
+		//	   }
+		// }
+		// if (king and right rook haven't moved) {
+		//     if (path is clear (1 right, 2 right)) {
+		//          positions.push(0, 2)
+		// 			setflag - right rook to (0, 1)
+		//     }
+		// }
+		
         break;
       case QUEEN:
         // Queen can move along all directions
