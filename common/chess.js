@@ -293,7 +293,16 @@ function Board() {
    *
    * This function will fail if the game is over or if
    * either of the moves supplied were invalid. In these
-   * cases false will be returned (true otherwise)
+   * cases false will be returned.
+   *
+   * Otherwise an object is returned like so:
+   *  - white.intercept = true/false
+   *  - white.dodge = true/false
+   *  - white.moves = true/false
+   *  - black.intercept = true/false
+   *  - black.dodge = true/false
+   *  - black.moves = true/false
+   *  - fight = true/false
    */
   function inPath(pos, path) {
     for (var i = 0, len = path.length; i < len; i++) {
@@ -309,34 +318,36 @@ function Board() {
     var whitePath = this.getPath(white);
     var blackPath = this.getPath(black);
 
+    var result = {white: {}, black: {}};
+
     // Calculate whether they intercept or not
-    var whiteInBlack = inPath(white.dst, blackPath);
-    var blackInWhite = inPath(black.dst, whitePath);
+    result.white.intercept = inPath(white.dst, blackPath);
+    result.black.intercept = inPath(black.dst, whitePath);
 
-    var whiteCanMove = true; // White move successful
-    var blackCanMove = true; // Black move successful
-    var fight = false;       // A fight occurs - resolution on piece value
+    result.white.moves = true; // White move successful
+    result.black.moves = true; // Black move successful
+    result.fight = false;       // A fight occurs - resolution on piece value
 
-    if (whiteInBlack && blackInWhite) {
+    if (result.white.intercept && result.black.intercept) {
       // They both intercept each other - fight!
-      fight = true;
-    } else if (whiteInBlack) {
+      result.fight = true;
+    } else if (result.white.intercept) {
       // White intercepts black
-      blackCanMove = false;
-    } else if (blackInWhite) {
+      result.black.moves = false;
+    } else if (result.black.intercept) {
       // Black intercepts white
-      whiteCanMove = false;
+      result.white.moves = false;
     } else {
       // No intercepts, check for 'dodges'
       // A dodge is when one piece moves away from a move which would've taken it
-      var whiteDodged = black.dst.equals(white.src);
-      var blackDodged = white.dst.equals(black.src);
-      if (whiteDodged && blackDodged) {
+      result.white.dodge = black.dst.equals(white.src);
+      result.black.dodge = white.dst.equals(black.src);
+      if (result.white.dodge && result.black.dodge) {
         // Both dodges, ie they both tried to take each other - fight!
-        fight = true;
-      } else if (whiteDodged) {
+        result.fight = true;
+      } else if (result.white.dodge) {
         // White dodged
-      } else if (blackDodged) {
+      } else if (result.black.dodge) {
         // Black dodged
       }
     }
@@ -345,12 +356,12 @@ function Board() {
     var blackPiece = board[black.src.x][black.src.y];
 
     // Resolve fighting powers
-    if (fight) {
+    if (result.fight) {
       if (STRENGTH[whitePiece] >= STRENGTH[blackPiece]) {
-        blackCanMove = false;
+        result.black.moves = false;
       }
       if (STRENGTH[blackPiece] >= STRENGTH[whitePiece]) {
-        whiteCanMove = false;
+        result.white.moves = false;
       }
     }
 
@@ -359,15 +370,14 @@ function Board() {
     // Move any pieces that can move
     board[white.src.x][white.src.y] = null;
     board[black.src.x][black.src.y] = null;
-    if (whiteCanMove) {
+    if (result.white.moves) {
       board[white.dst.x][white.dst.y] = whitePiece;
     }
-    if (blackCanMove) {
+    if (result.black.moves) {
       board[black.dst.x][black.dst.y] = blackPiece;
     }
 
     // Update numMoves and moves
-    // TODO deepcopy?
     moves[numMoves++] = {white: white.clone(), black: black.clone()};
 
     // Check if someone won
@@ -393,7 +403,7 @@ function Board() {
       result = WHITE;
     }
 
-    return true;
+    return result;
   };
   
   /*
@@ -486,7 +496,7 @@ Pos.prototype.clone = function() {
 };
 Pos.prototype.toString = function() {
   return '(' + this.x + ', ' + this.y + ')';
-}
+};
 
 /*
  * Represents a piece on the board

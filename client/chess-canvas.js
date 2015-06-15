@@ -98,21 +98,21 @@ function DrawableBoard(id) {
   /*
    * If both moves have been submitted, advance the game
    *
-   * Returns true if successful and false otherwise (eg both moves
-   * have not been submitted)
+   * Returns the result of the moves if successful and false
+   * otherwise (eg both moves have not been submitted)
    */
   this.advanceGame = function() {
     if (pendingMove[chess.WHITE] === null || pendingMove[chess.BLACK] === null) {
       return false;
     }
 
-    if (this.makeMove(pendingMove[chess.WHITE], pendingMove[chess.BLACK])) {
+    var result = this.makeMove(pendingMove[chess.WHITE], pendingMove[chess.BLACK]);
+    if (result !== false) {
       pendingMove[chess.WHITE] = null;
       pendingMove[chess.BLACK] = null;
-      return true;
-    } else {
-      return false;
     }
+
+    return result;
   };
 }
 DrawableBoard.prototype = Object.create(chess.Board.prototype);
@@ -206,9 +206,10 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
       case 3:
         moveDst = pos;
         result = board.submitMove(chess.BLACK, new chess.Move(moveSrc, moveDst));
-        result = result && board.advanceGame();
+        var moveResult = board.advanceGame();
+        result = result && (moveResult !== false);
         if (result) {
-          $scope.message = '';
+          $scope.message = moveResult;
         } else {
           $scope.message = 'Invalid destination cell: ' + pos;
           $scope.step = 2;
