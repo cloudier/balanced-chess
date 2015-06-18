@@ -242,7 +242,178 @@ describe('chess', function() {
                 'PPP.PPPP',
                 'RNBKQBNR',
             ]));
+
+            // knight vs pawn. Knight should win.
+            assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(1, 7, 2, 5)));
+            res = board.makeMove(new chess.Move(4, 3, 4, 4), new chess.Move(2, 5, 4, 4));
+            // assert(checkResult(res, )) not sure what "moves" means
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pp.p.ppp',
+                '........',
+                '........',
+                '....N...',
+                '........',
+                'PPP.PPPP',
+                'R.BKQBNR',
+           	]));
+
+           	// knight vs bishop. Both should die.
+           	assert(board.makeMove(new chess.Move(5, 0, 3, 2), new chess.Move(4, 4, 3, 2)));
+           	// assert(check result) == fight
+            assert(checkBoard(board.getBoard(), [
+                'rnbkq.nr',
+                'pp.p.ppp',
+                '........',
+                '........',
+                '........',
+                '........',
+                'PPP.PPPP',
+                'R.BKQBNR',
+           	]));
+
+            // bishop vs rook. Bishop should die.
+            assert(board.makeMove(new chess.Move(0, 1, 0, 3), new chess.Move(4, 6, 4, 4)));
+            assert(board.makeMove(new chess.Move(0, 0, 0, 2), new chess.Move(5, 7, 0, 2)));
+           	// assert(check result) == fight
+            assert(checkBoard(board.getBoard(), [
+                '.nbkq.nr',
+                '.p.p.ppp',
+                'r.......',
+                'p.......',
+                '....P...',
+                '........',
+                'PPP..PPP',
+                'R.BKQ.NR',
+           	]));
+
+           	// queen vs pawn. Pawn should die.
+           	assert(board.makeMove(new chess.Move(4, 0, 4, 3), new chess.Move(4, 4, 4, 3)));
+           	// assert(check result) == fight
+            assert(checkBoard(board.getBoard(), [
+                '.nbk..nr',
+                '.p.p.ppp',
+                'r.......',
+                'p...q...',
+                '........',
+                '........',
+                'PPP..PPP',
+                'R.BKQ.NR',
+           	]));
+
+           	// queen vs bishop. Bishop should die.
+           	assert(board.makeMove(new chess.Move(4, 3, 4, 5), new chess.Move(2, 7, 4, 5)));
+           	// assert(check result) == fight
+            assert(checkBoard(board.getBoard(), [
+                '.nbk..nr',
+                '.p.p.ppp',
+                'r.......',
+                'p.......',
+                '........',
+                '....q...',
+                'PPP..PPP',
+                'R..KQ.NR',
+           	]));
+
+           	// queen vs queen. Both should die.
+           	assert(board.makeMove(new chess.Move(4, 5, 4, 6), new chess.Move(4, 7, 4, 6)));
+           	// assert(check result) == fight
+            assert(checkBoard(board.getBoard(), [
+                '.nbk..nr',
+                '.p.p.ppp',
+                'r.......',
+                'p.......',
+                '........',
+                '........',
+                'PPP..PPP',
+                'R..K..NR',
+           	]));
         });
+		
+		/*
+		it('should do en pessant correctly', function() {
+            assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(5, 6, 5, 4)));
+            assert(board.makeMove(new chess.Move(2, 3, 2, 4), new chess.Move(5, 4, 5, 3)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pp.ppppp',
+                '........',
+                '.....P..',
+                '..p.....',
+                '........',
+                'PPPPP.PP',
+                'RNBKQBNR',
+            ]));
+            // shouldn't allow en pessant without pawns to take
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(5, 3, 4, 2)));
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(5, 3, 6, 2)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 1, 5)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 3, 5)));
+
+            assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(3, 6, 3, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pp.p.ppp',
+                '........',
+                '....pP..',
+                '..pP....',
+                '........',
+                'PPP.P.PP',
+                'RNBKQBNR',
+            ]));
+
+            // should allow en pessant on the side that advanced the pawn
+            assert(board.isValidMove(chess.BLACK, new chess.Move(5, 3, 4, 2)));
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(5, 3, 6, 2)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 1, 5)));
+            assert(board.isValidMove(chess.WHITE, new chess.Move(2, 4, 3, 5)));
+
+            // shouldn't allow the pieces that just moved out to en pessant
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(3, 4, 2, 3)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(4, 3, 5, 4)));
+
+            assert(board.makeMove(new chess.Move(0, 1, 0, 3), new chess.Move(0, 6, 0, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                '.p.p.ppp',
+                '........',
+                'p...pP..',
+                'P.pP....',
+                '........',
+                '.PP.P.PP',
+                'RNBKQBNR',
+            ]));
+
+            // shouldn't allow en pessant anymore because a turn has passed
+			assert(!board.isValidMove(chess.BLACK, new chess.Move(5, 3, 4, 2)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 3, 5)));
+
+            assert(board.makeMove(new chess.Move(6, 1, 6, 3), new chess.Move(1, 6, 1, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                '.p.p.p.p',
+                '........',
+                'p...pPp.',
+                'PPpP....',
+                '........',
+                '..P.P.PP',
+                'RNBKQBNR',
+            ]));
+
+            // do the actual en pessant now
+            assert(board.makeMove(new chess.Move(2, 4, 1, 5), new chess.Move(5, 3, 6, 2)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                '.p.p.p.p',
+                '......P.',
+                'p...p...',
+                'P..P....',
+                '.p......',
+                '..P.P.PP',
+                'RNBKQBNR',
+            ]));
+        });
+		*/
     });
     
 });

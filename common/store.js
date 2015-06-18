@@ -24,4 +24,5 @@ var chess = require('./chess.js')
     getResult()
     getNumMoves()
     getMove(int)
+    //hasMoved(colour, piece) // for checking castling stuff
 */
