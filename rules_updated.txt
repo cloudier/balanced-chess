@@ -1,0 +1,31 @@
+##################################
+# Balanced Chess Rules (Updated) #
+##################################
+
+All pieces move the same as in regular chess.
+
+
+# DODGE: 
+if X attempts to capture Y, and Y moves to another square, X will move to where Y used to be, and Y will DODGE and move as normal.
+
+
+# FIGHT: 
+If X moves to the same square that Y is moving to, the piece that is "STRONGER" will win the fight. Strength is defined as [king < pawn < knight/bishop < rook < queen]. If the pieces are equal in strength, both pieces die.
+
+Exception: If a pawn moves to a promotion square and a king also moves there, the king will win the fight.
+
+
+# INTERCEPT: 
+If X moves, and Y moves and STOPS IN ITS PATH, Y will kill X. 
+
+Exception: If a pawn moves in the path of a queen, the queen will kill the pawn and stop at the square where the pawn was killed.
+
+
+# DEFEND:
+If a player wishes to, they may DEFEND one of their own pieces. This works by having X move onto Y, as if attempting to take a friendly piece. Then, if Y is attacked by Z, a piece controlled by the other player, X and Y will team up and defeat Z regardless of its strength. However, X will die in the process.
+
+Note: If a player uses X to DEFEND Y and Y is not attacked, X will die anyway, as we cannot have two pieces in the same square. 
+
+Essentially, X is sacrificing itself to guarantee the safety of another piece in the next turn.
+
+Exception: When the king is defending another square, the defended piece will die, and the king will be the piece remaining in the defended square.
