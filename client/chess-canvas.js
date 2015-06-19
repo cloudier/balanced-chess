@@ -38,7 +38,7 @@ function DrawableBoard(id) {
    * Draw the current board state to the canvas
    */
   this.draw = function() {
-  	var playerColour = chess.WHITE;
+  	var playerColour = chess.BLACK;
 
     // Clear for redrawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -96,7 +96,7 @@ function DrawableBoard(id) {
    * Returns the Pos that describes the cell that was clicked
    */
   this.click = function(event) {
-    var playerColour = chess.WHITE;
+    var playerColour = chess.BLACK;
     var clickPos = canvas.relMouseCoords(event);
 
     var cellPos = new chess.Pos(Math.floor(clickPos.x / cellSize),

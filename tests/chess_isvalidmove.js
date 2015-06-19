@@ -165,6 +165,7 @@ describe('chess', function() {
         // });
     });
 
+	// MOVEMENT
     describe('makeMove', function() {
         it('should correctly move non-interacting pieces', function() {
             assert(board.makeMove(new chess.Move(3, 1, 3, 3), new chess.Move(3, 6, 3, 4)));
@@ -228,6 +229,7 @@ describe('chess', function() {
             ]));
         });
         
+        // FIGHTS
         it('should correctly resolve fights', function() {
             assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(3, 6, 3, 4)));
             var res = board.makeMove(new chess.Move(2, 3, 3, 4), new chess.Move(3, 4, 2, 3));
@@ -328,9 +330,52 @@ describe('chess', function() {
                 'PPP..PPP',
                 'R..K..NR',
            	]));
+
+           	// king vs pawn tests
+           	assert(board.makeMove(new chess.Move(3, 1, 3, 3), new chess.Move(2, 6, 2, 4))); 
+           	assert(board.makeMove(new chess.Move(3, 3, 3, 4), new chess.Move(2, 4, 2, 3))); 
+           	assert(board.makeMove(new chess.Move(3, 4, 3, 5), new chess.Move(2, 3, 2, 2))); 
+           	assert(board.makeMove(new chess.Move(3, 5, 3, 6), new chess.Move(3, 7, 4, 7))); 
+            assert(checkBoard(board.getBoard(), [
+                '.nbk..nr',
+                '.p...ppp',
+                'r.P.....',
+                'p.......',
+                '........',
+                '........',
+                'PPPp.PPP',
+                'R...K.NR',
+           	]));
+
+            // king vs pawn at promotion square. King should win
+            assert(board.makeMove(new chess.Move(3, 6, 3, 7), new chess.Move(4, 7, 3, 7))); 
+            assert(checkBoard(board.getBoard(), [
+                '.nbk..nr',
+                '.p...ppp',
+                'r.P.....',
+                'p.......',
+                '........',
+                '........',
+                'PPP..PPP',
+                'R..K..NR',
+           	]));
+
+           	// king vs pawn at any other square. Pawn should win.
+           	assert(board.makeMove(new chess.Move(3, 0, 2, 1), new chess.Move(2, 2, 2, 1))); 
+            assert(checkBoard(board.getBoard(), [
+                '.nb...nr',
+                '.pP..ppp',
+                'r.......',
+                'p.......',
+                '........',
+                '........',
+                'PPP..PPP',
+                'R..K..NR',
+           	]));
+
         });
 		
-		/*
+		// EN PESSANT
 		it('should do en pessant correctly', function() {
             assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(5, 6, 5, 4)));
             assert(board.makeMove(new chess.Move(2, 3, 2, 4), new chess.Move(5, 4, 5, 3)));
@@ -413,7 +458,65 @@ describe('chess', function() {
                 'RNBKQBNR',
             ]));
         });
-		*/
+
+		// DEFEND
+		it('should defend correctly', function() {
+            assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(6, 7, 5, 5)));
+            // defending when not attacked. Defending piece should die.
+            assert(board.makeMove(new chess.Move(2, 0, 1, 1), new chess.Move(4, 6, 5, 5)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.kqbnr',
+                'pppp.ppp',
+                '........',
+                '....p...',
+                '........',
+                '.....N..',
+                'PPPP.PPP',
+                'RNBKQB.R',
+            ]));
+
+            // defending a piece that is attacked. Defending piece and attacking piece should die.
+            // defended piece remains.
+           	assert(board.makeMove(new chess.Move(4, 0, 4, 3), new chess.Move(5, 5, 4, 3)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.k.bnr',
+                'pppp.ppp',
+                '........',
+                '....p...',
+                '........',
+                '........',
+                'PPPP.PPP',
+                'RNBKQB.R',
+            ]));
+
+            // the king defends a piece not under attack. The king should remain.
+           	assert(board.makeMove(new chess.Move(5, 0, 1, 4), new chess.Move(3, 7, 4, 7)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.k..nr',
+                'pppp.ppp',
+                '........',
+                '....p...',
+                '.b......',
+                '........',
+                'PPPP.PPP',
+                'RNB.KB.R',
+            ]));
+
+
+            // the king defends a piece that is under attack. The king should remain.
+           	assert(board.makeMove(new chess.Move(1, 4, 3, 6), new chess.Move(4, 7, 3, 6)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.k..nr',
+                'pppp.ppp',
+                '........',
+                '....p...',
+                '........',
+                '........',
+                'PPPK.PPP',
+                'RNB..B.R',
+            ]));
+        });
+		
     });
     
 });
