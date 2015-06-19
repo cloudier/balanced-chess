@@ -53,26 +53,6 @@ function DrawableBoard(id) {
 
     for (var col = 0; col < chess.BOARD_SIZE; col++) {
       for (var row = 0; row < chess.BOARD_SIZE; row++) {
-      	/*
-      	// if it's the end of a row/column, write the letter or number on the side of the board
-      	if (col === chess.BOARD_SIZE && row === chess.BOARD_SIZE) {
-      		// nothing for the bottom right corner
-      		continue;
-      	} else if (col === chess.BOARD_SIZE) {
-      		// display the row number
-      		var text0 = playerColour === chess.BLACK ? chess.BOARD_NUMBERS.charAt(row) 
-      												 : chess.BOARD_NUMBERS.charAt(chess.BOARD_SIZE - row - 1);
-      		//ctx.fillText(text0, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
-      		continue;
-      	} else if (row === chess.BOARD_SIZE) {
-      		// display the column letter
-      		var text0 = playerColour === chess.BLACK ? chess.BOARD_LETTERS.charAt(col) 
-      												 : chess.BOARD_LETTERS.charAt(chess.BOARD_SIZE - col - 1);
-      		//ctx.fillText(text0, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
-      		continue;
-      	}
-      	*/
-
       	// otherwise display the corresponding square on the board
       	var x = playerColour === chess.BLACK ? col : chess.BOARD_SIZE - col - 1;
       	var y = playerColour === chess.BLACK ? row : chess.BOARD_SIZE - row - 1;
@@ -92,6 +72,22 @@ function DrawableBoard(id) {
         }
       }
     }
+
+    /*
+    // draw column letters
+  	for (var col = 0; col < chess.BOARD_SIZE; col++) {
+  		var text = playerColour === chess.BLACK ? chess.BOARD_LETTERS.charAt(col) 
+  												: chess.BOARD_LETTERS.charAt(chess.BOARD_SIZE - col - 1);
+  	    // write(text) at x = col, y = chess.BOARD_SIZE * (cellSize + 1);
+  	}
+
+  	// draw row numbers
+  	for (var row = 0; row < chess.BOARD_SIZE; row++) {
+  		var text = playerColour === chess.BLACK ? chess.BOARD_LETTERS.charAt(row) 
+  												: chess.BOARD_LETTERS.charAt(chess.BOARD_SIZE - row - 1);
+  	    // write(text) at x = chess.BOARD_SIZE * (cellSize + 1), y = row;
+  	}
+  	*/
   };
 
   /*
