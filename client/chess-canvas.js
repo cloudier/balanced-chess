@@ -38,6 +38,8 @@ function DrawableBoard(id) {
    * Draw the current board state to the canvas
    */
   this.draw = function() {
+  	var playerColour = chess.WHITE;
+
     // Clear for redrawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -46,11 +48,36 @@ function DrawableBoard(id) {
     // Set font sizes and center them in each cell
     var fontSize = Math.floor(cellSize * 0.7);
     ctx.font = fontSize + 'px serif';
-    var offset = cellSize * 0.15;
+    var xOffset = cellSize * 0.15;
+    var yOffset = cellSize * 0.20;
 
-    for (var x = 0; x < chess.BOARD_SIZE; x++) {
-      for (var y = 0; y < chess.BOARD_SIZE; y++) {
-        ctx.rect(x * cellSize, y * cellSize, cellSize, cellSize);
+    for (var col = 0; col < chess.BOARD_SIZE; col++) {
+      for (var row = 0; row < chess.BOARD_SIZE; row++) {
+      	/*
+      	// if it's the end of a row/column, write the letter or number on the side of the board
+      	if (col === chess.BOARD_SIZE && row === chess.BOARD_SIZE) {
+      		// nothing for the bottom right corner
+      		continue;
+      	} else if (col === chess.BOARD_SIZE) {
+      		// display the row number
+      		var text0 = playerColour === chess.BLACK ? chess.BOARD_NUMBERS.charAt(row) 
+      												 : chess.BOARD_NUMBERS.charAt(chess.BOARD_SIZE - row - 1);
+      		//ctx.fillText(text0, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
+      		continue;
+      	} else if (row === chess.BOARD_SIZE) {
+      		// display the column letter
+      		var text0 = playerColour === chess.BLACK ? chess.BOARD_LETTERS.charAt(col) 
+      												 : chess.BOARD_LETTERS.charAt(chess.BOARD_SIZE - col - 1);
+      		//ctx.fillText(text0, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
+      		continue;
+      	}
+      	*/
+
+      	// otherwise display the corresponding square on the board
+      	var x = playerColour === chess.BLACK ? col : chess.BOARD_SIZE - col - 1;
+      	var y = playerColour === chess.BLACK ? row : chess.BOARD_SIZE - row - 1;
+        
+        ctx.rect(col * cellSize, row * cellSize, cellSize, cellSize);
         ctx.stroke();
 
         if (board[x][y] === null) continue;
@@ -58,10 +85,10 @@ function DrawableBoard(id) {
         var piece = board[x][y].pieceType;
         if (board[x][y].player === chess.WHITE) {
           var text = WHITE_ICONS[piece];
-          ctx.fillText(text, x * cellSize + offset, (y+1) * cellSize - offset, cellSize);
+          ctx.fillText(text, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
         } else {
           var text = BLACK_ICONS[piece];
-          ctx.fillText(text, x * cellSize + offset, (y+1) * cellSize - offset, cellSize);
+          ctx.fillText(text, col * cellSize + xOffset, (row+1) * cellSize - yOffset, cellSize);
         }
       }
     }
@@ -73,11 +100,16 @@ function DrawableBoard(id) {
    * Returns the Pos that describes the cell that was clicked
    */
   this.click = function(event) {
+    var playerColour = chess.WHITE;
     var clickPos = canvas.relMouseCoords(event);
 
     var cellPos = new chess.Pos(Math.floor(clickPos.x / cellSize),
                   Math.floor(clickPos.y / cellSize));
 
+    if (playerColour === chess.WHITE) {
+    	cellPos.x = chess.BOARD_SIZE - cellPos.x - 1;
+    	cellPos.y = chess.BOARD_SIZE - cellPos.y - 1;
+    }
     return cellPos;
   };
 

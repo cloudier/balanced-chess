@@ -31,6 +31,8 @@ var STRENGTH = {
 // TODO notsure if necessary
 // TODO this doesn't use the constants which is bad...
 var START_POSITION = 'RNBKQBNR';
+var BOARD_LETTERS = 'ABCDEFGH';
+var BOARD_NUMBERS = '12345678';
 
 // Directions
 var DXY = {
