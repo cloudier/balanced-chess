@@ -248,7 +248,7 @@ describe('chess', function() {
             // knight vs pawn. Knight should win.
             assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(1, 7, 2, 5)));
             res = board.makeMove(new chess.Move(4, 3, 4, 4), new chess.Move(2, 5, 4, 4));
-            // assert(checkResult(res, )) not sure what "moves" means
+            // assert(checkResult(res, )) not sure what "moves" means TODO
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
                 'pp.p.ppp',
@@ -413,10 +413,6 @@ describe('chess', function() {
             assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 1, 5)));
             assert(board.isValidMove(chess.WHITE, new chess.Move(2, 4, 3, 5)));
 
-            // shouldn't allow the pieces that just moved out to en pessant
-            assert(!board.isValidMove(chess.BLACK, new chess.Move(3, 4, 2, 3)));
-            assert(!board.isValidMove(chess.WHITE, new chess.Move(4, 3, 5, 4)));
-
             assert(board.makeMove(new chess.Move(0, 1, 0, 3), new chess.Move(0, 6, 0, 4)));
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
@@ -457,6 +453,23 @@ describe('chess', function() {
                 '..P.P.PP',
                 'RNBKQBNR',
             ]));
+
+            // check that you can dodge en pessant
+            assert(board.makeMove(new chess.Move(4, 3, 3, 4), new chess.Move(4, 6, 4, 4)));
+            res = board.makeMove(new chess.Move(3, 4, 4, 5), new chess.Move(4, 4, 4, 3));
+            //assert(checkResult(res, <DODGE ARGUMENTS GO HERE>)); TODO
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                '.p.p.p.p',
+                '......P.',
+                'p...P...',
+                'P.......',
+                '.p..p...',
+                '..P...PP',
+                'RNBKQBNR',
+            ]));
+
+
         });
 
 		// DEFEND
@@ -514,6 +527,54 @@ describe('chess', function() {
                 '........',
                 'PPPK.PPP',
                 'RNB..B.R',
+            ]));
+        });
+
+		// DEFEMD && EN PESSANT
+		it('should pass this test about defending a piece attacked with en pessant', function() {
+            assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(5, 6, 5, 4)));
+            assert(board.makeMove(new chess.Move(2, 3, 2, 4), new chess.Move(5, 4, 5, 3)));
+            assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(6, 7, 5, 5)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'pp.p.ppp',
+                '........',
+                '....pP..',
+                '..p.....',
+                '.....N..',
+                'PPPPP.PP',
+                'RNBKQB.R',
+            ]));
+
+            // Black pawn en pessants to take white pawn. White queen moves forward 2, to collide with black pawn.
+            // Two things should happen. 
+            // 1. the white pawn dies from en pessant
+            // 2. the white queen and black pawn fight normally, and the black pawn dies.
+            assert(board.makeMove(new chess.Move(4, 0, 4, 2), new chess.Move(5, 3, 4, 2)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbk.bnr',
+                'pp.p.ppp',
+                '....q...',
+                '........',
+                '..p.....',
+                '.....N..',
+                'PPPPP.PP',
+                'RNBKQB.R',
+            ]));
+
+			// White pawn en pessants to take black pawn. Black knight moves to defend the black pawn.
+            // The white pawn should die from the defend. The black knight should die from doing the defending.
+            assert(board.makeMove(new chess.Move(0, 1, 0, 2), new chess.Move(3, 6, 3, 4)));
+            assert(board.makeMove(new chess.Move(2, 4, 3, 5), new chess.Move(5, 5, 3, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rnbk.bnr',
+                '.p.p.ppp',
+                'p...q...',
+                '........',
+                '...P....',
+                '........',
+                'PPPPP.PP',
+                'RNBKQB.R',
             ]));
         });
 		
