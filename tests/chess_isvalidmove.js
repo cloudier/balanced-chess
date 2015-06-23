@@ -413,7 +413,11 @@ describe('chess', function() {
             assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 1, 5)));
             assert(board.isValidMove(chess.WHITE, new chess.Move(2, 4, 3, 5)));
 
-            assert(board.makeMove(new chess.Move(0, 1, 0, 3), new chess.Move(0, 6, 0, 4)));
+            // shouldn't allow en pessant for other pawns, even if pawns are side by side
+            assert(!board.isValidMove(chess.BLACK, new chess.Move(5, 3, 6, 2)));
+            assert(!board.isValidMove(chess.WHITE, new chess.Move(2, 4, 1, 5)));
+
+            assert(board.makeMove(new chess.Move(3, 4, 2, 3), new chess.Move(4, 3, 5, 4)));
             assert(checkBoard(board.getBoard(), [
                 'rnbkqbnr',
                 '.p.p.ppp',
