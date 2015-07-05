@@ -1,4 +1,5 @@
 var express = require('express');
+var http = require('http');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -9,7 +10,10 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var chess = require('./routes/chess');
 
+// Create the app and http server and attach socket.io
 var app = express();
+app.server = http.createServer(app);
+var io = require('socket.io')(app.server);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -60,5 +64,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// socket.io listeners
+io.on('connection', function(socket) {
+  console.log('a user connected');
+});
 
 module.exports = app;
