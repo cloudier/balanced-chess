@@ -179,6 +179,8 @@ board.draw();
 
 var app = angular.module('app', []);
 app.controller('ChessCtrl', ['$scope', function($scope) {
+  var self = this;
+
   /*
    * Step controls what should happen next
    *  - 0 White src
@@ -186,8 +188,8 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
    *  - 2 Black src
    *  - 3 Black dst
    */
-  $scope.step = 0;
-  $scope.instructions = [
+  self.step = 0;
+  self.instructions = [
     'White select source',
     'White select destination',
     'Black select source',
@@ -197,38 +199,38 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
   var moveSrc = null;
   var moveDst = null;
 
-  $scope.message = '';
-  $scope.board = board;
+  self.message = '';
+  self.board = board;
   $scope.click = function(event) {
     var pos = board.click(event);
     var result = false;
-    switch($scope.step) {
+    switch(self.step) {
       case 0:
         moveSrc = pos;
         result = pos.withinBounds();
         if (result) {
-          $scope.message = 'White moving from ' + moveSrc;
+          self.message = 'White moving from ' + moveSrc;
         } else {
-          $scope.message = 'Invalid source cell: ' + pos;
+          self.message = 'Invalid source cell: ' + pos;
         }
         break;
       case 1:
         moveDst = pos;
         result = board.submitMove(chess.WHITE, new chess.Move(moveSrc, moveDst));
         if (result) {
-          $scope.message = '';
+          self.message = '';
         } else {
-          $scope.message = 'Invalid destination cell: ' + pos;
-          $scope.step = 0;
+          self.message = 'Invalid destination cell: ' + pos;
+          self.step = 0;
         }
         break;
       case 2:
         moveSrc = pos;
         result = pos.withinBounds();
         if (result) {
-          $scope.message = 'Black moving from ' + moveSrc;
+          self.message = 'Black moving from ' + moveSrc;
         } else {
-          $scope.message = 'Invalid source cell';
+          self.message = 'Invalid source cell';
         }
         break;
       case 3:
@@ -237,16 +239,16 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
         var moveResult = board.advanceGame();
         result = result && (moveResult !== false);
         if (result) {
-          $scope.message = moveResult;
+          self.message = moveResult;
         } else {
-          $scope.message = 'Invalid destination cell: ' + pos;
-          $scope.step = 2;
+          self.message = 'Invalid destination cell: ' + pos;
+          self.step = 2;
         }
         board.draw();
         break;
     }
     if (result) {
-      $scope.step = ($scope.step + 1) % 4;
+      self.step = (self.step + 1) % 4;
     }
   }
 }]);
