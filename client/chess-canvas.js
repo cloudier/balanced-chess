@@ -178,7 +178,7 @@ var board = new DrawableBoard('chessboard');
 board.draw();
 
 var app = angular.module('app', []);
-app.controller('ChessCtrl', ['$scope', function($scope) {
+app.controller('ChessCtrl', function() {
   var self = this;
 
   /*
@@ -201,7 +201,7 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
 
   self.message = '';
   self.board = board;
-  $scope.click = function(event) {
+  self.click = function(event) {
     var pos = board.click(event);
     var result = false;
     switch(self.step) {
@@ -251,4 +251,4 @@ app.controller('ChessCtrl', ['$scope', function($scope) {
       self.step = (self.step + 1) % 4;
     }
   }
-}]);
+});
