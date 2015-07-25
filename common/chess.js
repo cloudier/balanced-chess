@@ -408,6 +408,25 @@ function Board() {
       }
     }
 
+	// Check defend interactions for white
+	if (board[white.dst.x][white.dst.y] !== null // if whitePiece is moving to 
+		&& board[white.dst.x][white.dst.y].player === WHITE // another white piece
+	    && white.dst.equals(black.dst)) { // and a black piece tries to take it
+	  // 1. the black piece dies
+	  result.black.moves = false;
+	  // 2. unless the defending piece is a king, they also die
+	  // set result.white.moves to true if king to revert its death in "resolve fighting powers"
+	  result.white.moves = (whitePiece.pieceType === KING) ? true : false;
+	}
+
+	// Check defend interactions for black
+	if (board[black.dst.x][black.dst.y] !== null 
+		&& board[black.dst.x][black.dst.y].player === BLACK 
+	    && white.dst.equals(black.dst)) { 
+      result.white.moves = false;
+      result.black.moves = (blackPiece.pieceType === KING) ? true : false;
+	}
+
     // Move any pieces that can move
     board[white.src.x][white.src.y] = null;
     board[black.src.x][black.src.y] = null;
