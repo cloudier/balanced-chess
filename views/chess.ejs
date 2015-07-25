@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.16/angular.min.js'></script>
-  </head>
+  <% include header.ejs %>
   <body ng-app="app">
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <div id="chessgame" ng-controller="ChessCtrl">
-      <p><b>Instruction:</b> {{ instructions[step] }}</p>
-      <p><b>Message:</b> {{ message }}</p>
+    <div id="chessgame" ng-controller="ChessCtrl as chess">
+      <p><b>Instruction:</b> {{ chess.instructions[chess.step] }}</p>
+      <p><b>Message:</b> {{ chess.message }}</p>
 
       <canvas id="chessboard" ng-click="click($event)" width="600" height="600" style="border: 1px solid blue;"></canvas>
     </div>
     <script src="/js/chess-canvas.js"></script>
+
+    <% include footer.ejs %>
   </body>
 </html>
