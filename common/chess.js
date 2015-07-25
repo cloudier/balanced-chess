@@ -334,6 +334,9 @@ function Board() {
     var whitePath = this.getPath(white);
     var blackPath = this.getPath(black);
 
+    var whitePiece = board[white.src.x][white.src.y];
+    var blackPiece = board[black.src.x][black.src.y];
+
     var result = {white: {}, black: {}};
 
     // Calculate whether they intercept or not
@@ -349,10 +352,22 @@ function Board() {
       result.fight = true;
     } else if (result.white.intercept) {
       // White intercepts black
-      result.black.moves = false;
+      if (blackPiece.pieceType === QUEEN && whitePiece.pieceType === PAWN) {
+      	// special case: when pawn's intercept a queen, the pawn dies and stops where they collided
+      	result.white.moves = false;
+      	black.dst = white.dst;
+      } else {
+      	// normal case
+        result.black.moves = false; 
+      }
     } else if (result.black.intercept) {
       // Black intercepts white
-      result.white.moves = false;
+      if (whitePiece.pieceType === QUEEN && blackPiece.pieceType === PAWN) { 
+      	result.black.moves = false;
+      	white.dst = black.dst;
+      } else {
+      	result.white.moves = false; // normal case
+      }
     } else {
       // No intercepts, check for 'dodges'
       // A dodge is when one piece moves away from a move which would've taken it
@@ -360,7 +375,10 @@ function Board() {
       result.black.dodge = white.dst.equals(black.src);
       if (result.white.dodge && result.black.dodge) {
         // Both dodges, ie they both tried to take each other - fight!
-        result.fight = true;
+        // However, knights dodge because their paths avoid each other
+        if (!(whitePiece.pieceType === KNIGHT && blackPiece.pieceType === KNIGHT)) {
+        	result.fight = true;
+        }
       } else if (result.white.dodge) {
         // White dodged
       } else if (result.black.dodge) {
@@ -368,28 +386,42 @@ function Board() {
       }
     }
 
-    var whitePiece = board[white.src.x][white.src.y];
-    var blackPiece = board[black.src.x][black.src.y];
-
     // Resolve fighting powers
     if (result.fight === true) {
       if (STRENGTH[whitePiece.pieceType] >= STRENGTH[blackPiece.pieceType]) {
-        result.black.moves = false;
+      	// special case: king beats pawn on promotion square
+      	if (blackPiece.pieceType === KING && whitePiece.pieceType === PAWN
+      		&& white.dst.y === 7) {
+          result.white.moves = false;
+      	} else { // normal case
+      	  result.black.moves = false;	
+      	}
       }
       if (STRENGTH[blackPiece.pieceType] >= STRENGTH[whitePiece.pieceType]) {
-        result.white.moves = false;
+      	// special case: king beats pawn on promotion square
+      	if (whitePiece.pieceType === KING && blackPiece.pieceType === PAWN
+      		&& black.dst.y === 0) {
+          result.black.moves = false;
+      	} else { // normal case
+      	  result.white.moves = false;	
+      	}
       }
     }
-
-    // Check for pawn promotion?
 
     // Move any pieces that can move
     board[white.src.x][white.src.y] = null;
     board[black.src.x][black.src.y] = null;
     if (result.white.moves) {
+      // check for pawn promotion
+      if (white.dst.y === 7 && whitePiece.pieceType === PAWN) {
+      	whitePiece.pieceType = QUEEN; // queen by default for now
+      }
       board[white.dst.x][white.dst.y] = whitePiece;
     }
     if (result.black.moves) {
+      if (black.dst.y === 0 && blackPiece.pieceType === PAWN) {
+      	blackPiece.pieceType = QUEEN;
+      }
       board[black.dst.x][black.dst.y] = blackPiece;
     }
 

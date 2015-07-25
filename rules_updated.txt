@@ -18,7 +18,7 @@ Exception: If a pawn moves to a promotion square and a king also moves there, th
 # INTERCEPT: 
 If X moves, and Y moves and STOPS IN ITS PATH, Y will kill X. 
 
-Exception: If a pawn moves in the path of a queen, the queen will kill the pawn and stop at the square where the pawn was killed.
+Exception: If a pawn moves in the path of a queen, the queen will kill the pawn and stop at the square where they collided.
 
 
 # DEFEND:

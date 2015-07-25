@@ -342,10 +342,12 @@ describe('chess', function() {
            	]));
 
            	// king vs pawn tests
+                // moving pawns into position...
            	assert(board.makeMove(new chess.Move(3, 1, 3, 3), new chess.Move(2, 6, 2, 4))); 
            	assert(board.makeMove(new chess.Move(3, 3, 3, 4), new chess.Move(2, 4, 2, 3))); 
            	assert(board.makeMove(new chess.Move(3, 4, 3, 5), new chess.Move(2, 3, 2, 2))); 
-           	assert(board.makeMove(new chess.Move(3, 5, 3, 6), new chess.Move(3, 7, 4, 7))); 
+           	assert(board.makeMove(new chess.Move(3, 5, 3, 6), new chess.Move(3, 7, 4, 7)));
+                // board should look like this
             assert(checkBoard(board.getBoard(), [
                 '.nbk..nr',
                 '.p...ppp',
@@ -357,7 +359,7 @@ describe('chess', function() {
                 'R...K.NR',
            	]));
 
-            // king vs pawn at promotion square. King should win
+            // black king vs white pawn at promotion square. King should win
             assert(board.makeMove(new chess.Move(3, 6, 3, 7), new chess.Move(4, 7, 3, 7))); 
             assert(checkBoard(board.getBoard(), [
                 '.nbk..nr',
@@ -370,7 +372,7 @@ describe('chess', function() {
                 'R..K..NR',
            	]));
 
-           	// king vs pawn at any other square. Pawn should win.
+           	// white king vs black pawn at any other square. Pawn should win.
            	assert(board.makeMove(new chess.Move(3, 0, 2, 1), new chess.Move(2, 2, 2, 1))); 
             assert(checkBoard(board.getBoard(), [
                 '.nb...nr',
