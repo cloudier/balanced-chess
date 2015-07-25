@@ -1,4 +1,14 @@
 /*jslint node: true, mocha: true*/
+/* currently tests the following:
+ * - setup and basic movement
+ * - fights
+ * - en pessant
+ * - defend
+ * - en pessant & defend
+ * TODO
+ * - intercepts
+ * - castling
+ */
 'use strict';
 
 var assert = require('assert'),
@@ -373,6 +383,22 @@ describe('chess', function() {
                 'R..K..NR',
            	]));
 
+           	// knights try to take each other. Should dodge, not fight
+            board = new chess.Board();
+            assert(board.makeMove(new chess.Move(1, 0, 2, 2), new chess.Move(6, 7, 5, 5)));
+            assert(board.makeMove(new chess.Move(2, 2, 3, 4), new chess.Move(7, 6, 7, 5)));
+            assert(board.makeMove(new chess.Move(3, 4, 5, 5), new chess.Move(5, 5, 3, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bkqbnr',
+                'pppppppp',
+                '........',
+                '........',
+                '...N....',
+                '.....n.P',
+                'PPPPPPP.',
+                'RNBKQB.R',
+            ]));
+
         });
 		
 		// EN PESSANT
@@ -534,7 +560,7 @@ describe('chess', function() {
             ]));
         });
 
-		// DEFEMD && EN PESSANT
+		// DEFEND && EN PESSANT
 		it('should pass this test about defending a piece attacked with en pessant', function() {
             assert(board.makeMove(new chess.Move(2, 1, 2, 3), new chess.Move(5, 6, 5, 4)));
             assert(board.makeMove(new chess.Move(2, 3, 2, 4), new chess.Move(5, 4, 5, 3)));
@@ -579,6 +605,124 @@ describe('chess', function() {
                 '........',
                 'PPPPP.PP',
                 'RNBKQB.R',
+            ]));
+        });
+
+		// INTERCEPTS
+		it('should handle intercepts correctly', function() {
+            assert(board.makeMove(new chess.Move(3, 1, 3, 3), new chess.Move(4, 6, 4, 4)));
+            assert(board.makeMove(new chess.Move(3, 3, 3, 4), new chess.Move(7, 6, 7, 4)));	
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'ppp.pppp',
+                '........',
+                '........',
+                '...pP..P',
+                '........',
+                'PPPP.PP.',
+                'RNBKQBNR',
+            ]));
+
+            // white pawn moves up, intercepting black bishop. Black bishop should die
+            assert(board.makeMove(new chess.Move(3, 4, 3, 5), new chess.Move(5, 7, 1, 3)));	
+            assert(checkBoard(board.getBoard(), [
+                'rnbkqbnr',
+                'ppp.pppp',
+                '........',
+                '........',
+                '....P..P',
+                '...p....',
+                'PPPP.PP.',
+                'RNBKQ.NR',
+            ]));
+
+            // white bishop moves to intercept black rook at bot right
+            assert(board.makeMove(new chess.Move(4, 1, 4, 3), new chess.Move(7, 4, 7, 3)));
+			assert(board.makeMove(new chess.Move(2, 0, 7, 5), new chess.Move(7, 7, 7, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.kqbnr',
+                'ppp..ppp',
+                '........',
+                '....p..P',
+                '....P...',
+                '...p...b',
+                'PPPP.PP.',
+                'RNBKQ.N.',
+            ]));
+
+            // white bishop should beat black queen on intercept
+            assert(board.makeMove(new chess.Move(4, 0, 2, 2), new chess.Move(4, 7, 4, 5)));
+            assert(board.makeMove(new chess.Move(5, 0, 2, 3), new chess.Move(4, 5, 1, 2)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.k..nr',
+                'ppp..ppp',
+                '..q.....',
+                '..b.p..P',
+                '....P...',
+                '...p...b',
+                'PPPP.PP.',
+                'RNBK..N.',
+            ]));
+
+            // pawn intercepts queen. pawn should die, queen should stop at where they collided
+            assert(board.makeMove(new chess.Move(2, 3, 1, 2), new chess.Move(7, 3, 7, 2)));
+            assert(board.makeMove(new chess.Move(2, 2, 2, 6), new chess.Move(2, 6, 2, 5)));
+            assert(checkBoard(board.getBoard(), [
+                'rn.k..nr',
+                'ppp..ppp',
+                '.bq....P',
+                '....p...',
+                '....P...',
+                '..qp...b',
+                'PP.P.PP.',
+                'RNBK..N.',
+            ]));
+
+            // reset board. now for knight tests
+            // knight paths are forward, forward, turn
+            // pawn intercepts at square 1 of knight's path
+            board = new chess.Board();
+            assert(board.makeMove(new chess.Move(1, 0, 2, 2), new chess.Move(2, 6, 2, 4)));
+            assert(board.makeMove(new chess.Move(2, 2, 3, 4), new chess.Move(2, 4, 2, 3)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bkqbnr',
+                'pppppppp',
+                '........',
+                '..P.....',
+                '........',
+                '........',
+                'PP.PPPPP',
+                'RNBKQBNR',
+            ]));
+
+            // pawn intercepts at square 2 of knight's path
+            board = new chess.Board();
+            assert(board.makeMove(new chess.Move(1, 0, 2, 2), new chess.Move(2, 6, 2, 5)));
+            assert(board.makeMove(new chess.Move(2, 2, 3, 4), new chess.Move(2, 5, 2, 4)));
+            assert(checkBoard(board.getBoard(), [
+                'r.bkqbnr',
+                'pppppppp',
+                '........',
+                '........',
+                '..P.....',
+                '........',
+                'PP.PPPPP',
+                'RNBKQBNR',
+            ]));
+
+            // pawn doesn't intercept path at all
+            board = new chess.Board();
+            assert(board.makeMove(new chess.Move(1, 0, 2, 2), new chess.Move(3, 6, 3, 4)));
+            assert(board.makeMove(new chess.Move(2, 2, 3, 4), new chess.Move(3, 4, 3, 3))); // pawn intercepts
+            assert(checkBoard(board.getBoard(), [
+                'r.bkqbnr',
+                'pppppppp',
+                '........',
+                '...P....',
+                '...n....',
+                '........',
+                'PPP.PPPP',
+                'RNBKQBNR',
             ]));
         });
 		
